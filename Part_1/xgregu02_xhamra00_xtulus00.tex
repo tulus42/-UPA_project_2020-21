@@ -3,8 +3,10 @@
 \usepackage[left=2cm, text={17cm, 24cm}, top = 3cm]{geometry}
 \usepackage{times}
 \usepackage[utf8]{inputenc}
-\usepackage[slovak]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[czech]{babel}
 \usepackage{enumitem}
+\usepackage{hyperref}
 \setlength\parindent{0pt}
 
 \begin{document}
@@ -28,7 +30,7 @@
 \section*{Zvolené dotazy a formulácia vlastného dotazu:}
 \setlist{nolistsep}
 \begin{itemize}[noitemsep]
-\item Dotaz A: popisné charakteristiky pre aspoň 4 údaje (?, ?, ?, ?) a prehľad osôb s prekázanou nákazou podľa hlásenia hygienických staníc 
+\item Dotaz A: popisné charakteristiky pre aspoň 4 údaje (dátum nahlásenia, pohlavie, vek, okres, zdroj nákazy) a prehľad osôb s prekázanou nákazou podľa hlásenia hygienických staníc 
 \item Dotaz B: vliv počtu chorých a jeho zmeny v čase na susedné okresy, šírenie nákazy cez hranice okresov
 \item Dotaz C (vlastný dotaz):  reálny percentuálny prírastok nakazených voči počtu testov v krajinách EU
 \end{itemize}
@@ -37,9 +39,25 @@
 \section*{Charakteristika pre zvolené dátové sady}
 
 \subsection*{Dotaz A}
+Primárnym zdrojom je dátová sada KHS s názvom: \href{https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19}{"COVID-19: Přehled osob s prokázanou nákazou dle hlášení krajských hygienických stanic (v2)"}, ktorá obsahuje dáta vo formáte JSON. Dáta obsahujú základné údaje o nakazenom: dátum hlásenia, vek, pohlavie, kód krajskej hygienickej stanice, kód okresu bydliska a či je nákaza importovaná zo zahraničia a ak áno, tak odkiaľ. Táto dátová sada obsahuje informácie o všetkých nakazených občanoch Českej republiky od počiatku pandémie.
+
+\hfill \break
+Tieto dáta taktiež umožnia agregované dotazy podľa dátumu nahlásenia, pohlavia, veku alebo okresu. Pri agregovaných dotazoch je možné rozšíriť celkový prehľad o priemerný vek nakazených, ktorý je často rozhodujúcim faktorom mortality nakazeného. Všetky dáta z tejto dátovej sady budú použité pre základný prehľad o nakazených a splnenie dotazu A.
+
+\hfill \break
+\textbf{!!! Dodať spôsob získavania. Stačí obyčajný download? Dunno...}
 \subsection*{Dotaz B}
+Primárnym zdrojom je dátová sada KHS s názvom: \href{https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19}{"COVID-19: Přehled epidemiologické situace dle hlášení krajských hygienických stanic podle okresu"}, ktorá obsahuje dáta vo formáte JSON. Dáta obsahujú údaje o krajoch a okresoch a kumulatívne počty nakazených, vyliečených a úmrtí pre konkrétne dátumy.
+
+\hfill \break
+Dátová sada nám umožňuje zobraziť agregované údaje pre kraje, ale aj pre konkrétne okresy v ľubovolnom časovom rozmedzí. Keďže chceme sledovať iba šírenie nákazy, nebudeme využívať údaje o počte vyliečených a počte úmrtí.
+
+\hfill \break
+\textbf{!!! Same here}
+
 \subsection*{Dotaz C}
 
 % popis NoSQL databázy
-\section*{Zvolený spôsob uloženia sutových dát}
+\section*{Zvolený spôsob uloženia surových dát}
+Pre uloženie surových dát sme zvolili NoSQL databázu MongoDB, pretože má flexibilné schéma dokumentov a využíva štruktúru podobnú formátu JSON, ktorý sa dobre spracováva vo vysokoúrovňových jazykoch.
 \end{document}
