@@ -45,7 +45,7 @@ Primárnym zdrojom je dátová sada KHS s názvom: \href{https://onemocneni-aktu
 Tieto dáta taktiež umožnia agregované dotazy podľa dátumu nahlásenia, pohlavia, veku alebo okresu. Pri agregovaných dotazoch je možné rozšíriť celkový prehľad o priemerný vek nakazených, ktorý je často rozhodujúcim faktorom mortality nakazeného. Všetky dáta z tejto dátovej sady budú použité pre základný prehľad o nakazených a splnenie dotazu A.
 
 \hfill \break
-\textbf{!!! Dodať spôsob získavania. Stačí obyčajný download? Dunno...}
+Dáta budú získané pomocou príkazu \texttt{curl} a importované cez príkaz \texttt{mongoimport} pomocou skriptu, ktorý takto pripraví celú databázu a jej kolekcie.
 \subsection*{Dotaz B}
 Primárnym zdrojom je dátová sada KHS s názvom: \href{https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19}{"COVID-19: Přehled epidemiologické situace dle hlášení krajských hygienických stanic podle okresu"}, ktorá obsahuje dáta vo formáte JSON. Dáta obsahujú údaje o krajoch a okresoch a kumulatívne počty nakazených, vyliečených a úmrtí pre konkrétne dátumy.
 
@@ -53,9 +53,16 @@ Primárnym zdrojom je dátová sada KHS s názvom: \href{https://onemocneni-aktu
 Dátová sada nám umožňuje zobraziť agregované údaje pre kraje, ale aj pre konkrétne okresy v ľubovolnom časovom rozmedzí. Keďže chceme sledovať iba šírenie nákazy, nebudeme využívať údaje o počte vyliečených a počte úmrtí.
 
 \hfill \break
-\textbf{!!! Same here}
+Dáta budú získané pomocou príkazu \texttt{curl} a importované cez príkaz \texttt{mongoimport} pomocou skriptu, ktorý takto pripraví celú databázu a jej kolekcie.
 
 \subsection*{Dotaz C}
+Zdrojom dát pre Dotaz C bude dátová sada dostupná na ECDC (European Centre for Disease Prevention and Control) s názvom: "Testing for COVID-19 by week and country". Dátová sada obsahuje údaje vo formáte XLSX a pre nás zaujímavými sú údaje o počte nových prípadov a počet testov pre jednotlivé krajiny. Dátová sada ďalej obsahuje už aj vypočítané percento nových prípadov k počtu testov. Údaje sú zozbierané z rôznych, verejne dostupných, zdrojov rôznymi spôsobmi. 
+
+\hfill \break
+Ďalej dátová sada obsahuje údaje ako spôsob zberu dát, dvojmiestny kód krajiny, populáciu a množstvo testov na 100,000 obyvateľov. Tieto údaje nás avšak pre splnenie dotazu nezaujímajú.
+
+\hfill \break
+Dátová sada dostupná z webovej lokality ECDC je natívne uložená vo formáte XLSX. Na konverziu dát do formátu JSON kvôli jednoduchej kompatibilite s MongoDB využijeme nástroje príkazového riadku Ubuntu linux. Pre konverziu z XLSX do formátu CSV využijeme nástroj \texttt{ssconvert} aplikácie \texttt{Gnumeric}. Následne takto konvertovaný CSV súbor preklopíme pomocou nástroja \texttt{csvtojson} do formátu JSON.
 
 % popis NoSQL databázy
 \section*{Zvolený spôsob uloženia surových dát}
