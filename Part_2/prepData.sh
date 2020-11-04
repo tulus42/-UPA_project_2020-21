@@ -5,14 +5,10 @@ mongo prepNoSQL.js
 
 # preprare the A dataset
 curl https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/osoby.min.json --output A
-python3 formatJson.py A > A1.json
-cat A1.json | sed "s/\bFalse\b/'False'/g" > A2.json
-cat A2.json | sed "s/\bTrue\b/'True'/g" > A.json
+python3 formatJson.py A | sed "s/\bFalse\b/'False'/g" | sed "s/\bTrue\b/'True'/g" > A.json
 mongoimport -d corona -c A --legacy --file A.json
 
 rm -rf A
-rm -rf A1.json
-rm -rf A2.json
 rm -rf A.json
 
 # preprare the B dataset
