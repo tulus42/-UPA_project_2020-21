@@ -38,7 +38,7 @@
 {'nuts_code': 'CZ051', 'nuts_name': 'Liberecký kraj', 'lau_code': 'CZ0511', 'lau_name': 'Česká Lípa'},
 {'nuts_code': 'CZ051', 'nuts_name': 'Liberecký kraj', 'lau_code': 'CZ0512', 'lau_name': 'Jablonec nad Nisou'},
 {'nuts_code': 'CZ051', 'nuts_name': 'Liberecký kraj', 'lau_code': 'CZ0513', 'lau_name': 'Liberec'},
-{'nuts_code': 'CZ051', 'nuts_name': 'Liberecký kraj', 'lau_code': 'CZ0514', 'lau_name': ''Semily},
+{'nuts_code': 'CZ051', 'nuts_name': 'Liberecký kraj', 'lau_code': 'CZ0514', 'lau_name': 'Semily'},
 {'nuts_code': 'CZ052', 'nuts_name': 'Královéhradecký kraj', 'lau_code': 'CZ0521', 'lau_name': 'Hradec Králové'},
 {'nuts_code': 'CZ052', 'nuts_name': 'Královéhradecký kraj', 'lau_code': 'CZ0522', 'lau_name': 'Jičín'},
 {'nuts_code': 'CZ052', 'nuts_name': 'Královéhradecký kraj', 'lau_code': 'CZ0523', 'lau_name': 'Náchod'},
