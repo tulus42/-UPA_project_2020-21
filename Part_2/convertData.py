@@ -81,39 +81,85 @@ class convertData:
     def fetchCollectionData(self, collectionName):
         return self.mongodb[collectionName].find()
 
-    def obtainImportantData(self, dataset, labels):
+
+    def adjustByConstraints(self, one_data, one_constraint):
+        if(one_constraint == 'U'):
+            return one_data.upper()
+
+    def obtainImportantData(self, dataset, labels, constraints):
         val = []
+
+        # iterate over the obtained dataset
         for data in dataset:
             important_data = []
-            for label in labels:
-                important_data.append(data[label])
+            for i in range(0,len(labels)):
+
+                # check for constraints
+                if(constraints[i] != ''):
+                    currentData = self.adjustByConstraints(data[labels[i]], constraints[i])
+                else:
+                    currentData = data[labels[i]]
+
+                # append it to list
+                important_data.append(currentData)
+
+            # crete the final tuple
             val.append(tuple(important_data))
-            
         return val
 
 
-    def convertCountries(self):
-        countries = self.fetchCollectionData('countries')
-        vals = self.obtainImportantData(countries, ['alpha2', 'name'])
-        
-        sql_command = "INSERT INTO country_codes (country_code, country_name) VALUES (%s, %s)"
-
+    def executeMany(self, sql_command, vals):
         self.mysqlCursor.executemany(sql_command, vals)
-
         self.mysql.commit()
-
         print(self.mysqlCursor.rowcount, " was inserted")
-        #val = []
-        #for data in countries:
-        #    country_name = data['name']
-        #    country_code = data['alpha2'].upper()
-        #    val.append((country_code, country_name))
 
-        #print(val)
+
+    def convertRegions(self):
+        # get the dataset 
+        nuts_lau = self.fetchCollectionData('nuts_lau')
+
+        # select appropriate values
+        vals = self.obtainImportantData(nuts_lau, ['nuts_code', 'nuts_name'], ['', ''])
+
+        # we only need distinct values
+        vals = list(set(vals))
+
+        # conversion
+        sql_command = "INSERT INTO region_codes (region_code, region_name) VALUES (%s, %s)"
+        self.executeMany(sql_command, vals)
+
+        
+    def convertDistricts(self):
+        # get the dataset 
+        nuts_lau = self.fetchCollectionData('nuts_lau')
+
+        # select appropriate values
+        vals = self.obtainImportantData(nuts_lau, ['lau_code', 'lau_name', 'nuts_code'], ['', '', ''])
+        
+        # conversion
+        sql_command = "INSERT INTO district_codes (district_code, district_name, region_code) VALUES (%s, %s, %s)"
+        self.executeMany(sql_command, vals)
+
+    def convertCountries(self):
+        # get the dataset 
+        countries = self.fetchCollectionData('countries')
+
+        # select appropriate values
+        vals = self.obtainImportantData(countries, ['alpha2', 'name'], ['U', ''])
+
+        # conversion
+        sql_command = "INSERT INTO country_codes (country_code, country_name) VALUES (%s, %s)"
+        self.executeMany(sql_command, vals)
+
+    def convertInfectivity(self):
+        pass
+
 
 
 Convertor = convertData()
 Convertor.createRelationalDatabase('Corona.sql')
-Convertor.convertCountries()
+#Convertor.convertCountries()
+Convertor.convertRegions()
+Convertor.convertDistricts()
 #Convertor.convertB()
 #Convertor.convertA()
