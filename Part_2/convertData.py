@@ -5,6 +5,7 @@ import sys
 import pymongo
 import mysql.connector
 from sqlite3 import OperationalError
+import datetime
 
 class convertData:
     '''
@@ -24,18 +25,7 @@ class convertData:
             user="root",
             password="ahojahojahoj"
         )
-
         self.mysqlCursor = self.mysql.cursor()
-        #mycursor = self.nosql.cursor()
-        #with open('RelationalDatabase.sql') as f:
-            #mycursor = self.nosql.cursor()
-            #mycursor.execute(f.read(), multi=True)
-            #self.nosql.commit()
-        #mycursor.execute("DROP DATABASE a")
-        #mycursor.execute("DROP DATABASE IF EXISTS a SHOW DATABASES;")
-
-        #for x in mycursor:
-        #    print(x)
 
     ### from stack overflow 
     # https://stackoverflow.com/questions/19472922/reading-external-sql-script-in-python
@@ -60,21 +50,6 @@ class convertData:
             except OperationalError:
                 print("Command skipped")
 
-    '''
-    Creates tables for relational databases
-    '''
-    def convertB(self):
-        self.collectionB = self.db["B"]
-        for x in self.collectionB.find():
-            print(x)
-            break
-
-    def convertA(self):
-        self.collectionA = self.db["A"]
-        for x in self.collectionA.find():
-            print(x)
-            break
-
     def fetchCollection(self, collectionName):
         return self.mongodb[collectionName]
 
@@ -83,8 +58,47 @@ class convertData:
 
 
     def adjustByConstraints(self, one_data, one_constraint):
-        if(one_constraint == 'U'):
-            return one_data.upper()
+        if(one_constraint == 'UPPER'):
+            if(one_data == ''):
+                return None
+            else:
+                return one_data.upper()
+
+        elif(one_constraint == 'UPPER_C'):
+            if(one_data == ''):
+                return None
+            else:
+
+                # fix inconsistency
+                if(one_data == 'UK'):
+                    one_data = 'GB'
+                elif(one_data == 'EL'):
+                    one_data = 'GR'
+
+                one_data = one_data.upper()
+                if one_data in self.countries:
+                    return one_data
+                else:
+                    sys.stderr.write("Missing country code for " + str(one_data) + '\n')
+                    return None
+        elif(one_constraint == 'BOOL'):
+            if(one_data == 'False'):
+                return 0
+            elif(one_data == 'True'):
+                return 1
+        elif(one_constraint == 'LAU'):
+            if one_data in self.districts:
+                return one_data
+            else:
+                return None
+        elif(one_constraint == 'NUTS'):
+            if one_data in self.regions:
+                return one_data
+            else:
+                return None
+        elif(one_constraint == 'WEEK_B'):
+            return datetime.datetime.strptime(one_data + '-1', "%Y-W%W-%w")
+
 
     def obtainImportantData(self, dataset, labels, constraints):
         val = []
@@ -145,21 +159,80 @@ class convertData:
         countries = self.fetchCollectionData('countries')
 
         # select appropriate values
-        vals = self.obtainImportantData(countries, ['alpha2', 'name'], ['U', ''])
+        vals = self.obtainImportantData(countries, ['alpha2', 'name'], ['UPPER', ''])
 
         # conversion
         sql_command = "INSERT INTO country_codes (country_code, country_name) VALUES (%s, %s)"
         self.executeMany(sql_command, vals)
 
     def convertInfectivity(self):
-        pass
+        # get the dataset
+        collectionB = self.fetchCollectionData('B')
 
+        # select appropriate values
+        vals = self.obtainImportantData(collectionB, ['datum', 'kraj_nuts_kod', 'okres_lau_kod', 'kumulativni_pocet_nakazenych'], ['', '', '', '', ''])
+        
+        # conversion
+        sql_command = "INSERT INTO infectivity (date_of_infection, region_code, district_code, num_of_ill) VALUES (%s, %s, %s, %s)"
+        self.executeMany(sql_command, vals)
 
+    def prepareDistinctRegionsAndDistricts(self):
+        self.mysqlCursor.execute("SELECT DISTINCT region_code FROM region_codes")
+        out = self.mysqlCursor.fetchall()
+
+        self.regions = [item for t in out for item in t]
+
+        self.mysqlCursor.execute("SELECT DISTINCT district_code FROM district_codes")
+        out = self.mysqlCursor.fetchall()
+
+        self.districts = [item for t in out for item in t]
+
+    def prepareCountryCodes(self):
+        self.mysqlCursor.execute("SELECT DISTINCT country_code FROM country_codes")
+        out = self.mysqlCursor.fetchall()
+
+        self.countries = [item for t in out for item in t]
+
+    def convertIll(self):
+        # prepare distinct regions and districts
+        
+
+        # get the dataset
+        collectionA = self.fetchCollectionData('A')
+
+        # select appropriate values
+        vals = self.obtainImportantData(collectionA, ['datum', 'vek', 'pohlavi', 'kraj_nuts_kod', 'okres_lau_kod', 'nakaza_v_zahranici', 'nakaza_zeme_csu_kod'], ['', '', '', 'NUTS', 'LAU', 'BOOL', 'UPPER_C'])
+
+        # conversion
+        sql_command = "INSERT INTO ill (date_of_infection, age, gender, region_code, district_code, imported, country_code) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        self.executeMany(sql_command, vals)
+
+        batchSize = 10000
+        i = 0
+        #for batch in self.batchProvider(vals, batchSize):
+            #self.executeMany(sql_command, batch)
+
+    def batchProvider(self, data, batch_size=100):
+        # create the generator
+        for i in range(0, len(data), batch_size):
+            yield data[i:i+batch_size]
+
+    def convertPositivityRate(self):
+        # get the dataset
+        collectionC = self.fetchCollectionData('C')
+
+        # select appropriate values
+        # vals = self.obtainImportantData(collectionC, ['country_code', 'year_week', 'year_week', 'new_cases', 'tests_done', 'population', 'testing_rate'], ['', '', '', '', '', '', ''])
+        vals = self.obtainImportantData(collectionC, ['country_code', 'year_week', 'year_week', 'new_cases', 'tests_done', 'population'], ['UPPER_C', 'WEEK_B', '', '', '', ''])
+        print(vals[0])
 
 Convertor = convertData()
 Convertor.createRelationalDatabase('Corona.sql')
-#Convertor.convertCountries()
-Convertor.convertRegions()
-Convertor.convertDistricts()
-#Convertor.convertB()
-#Convertor.convertA()
+Convertor.convertCountries()
+Convertor.prepareCountryCodes()
+#Convertor.convertRegions()
+#Convertor.convertDistricts()
+#Convertor.prepareDistinctRegionsAndDistricts()
+#Convertor.convertInfectivity()
+#Convertor.convertIll()
+Convertor.convertPositivityRate()

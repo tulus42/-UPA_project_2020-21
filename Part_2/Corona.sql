@@ -11,14 +11,15 @@ DROP TABLE IF EXISTS infectivity;
 
 
 CREATE TABLE ill(
-	id INTEGER,
+	id INTEGER NOT NULL AUTO_INCREMENT,
     date_of_infection DATE NOT NULL,
     age SMALLINT NOT NULL,
     gender CHAR(1) NOT NULL,
-    region_code VARCHAR(10) NOT NULL,
-    district_code VARCHAR(10) NOT NULL,
+    region_code VARCHAR(10) NULL,
+    district_code VARCHAR(10) NULL,
     imported BOOL NOT NULL,
-    country_code VARCHAR(2) NULL ### can be null if not imported
+    country_code VARCHAR(2) NULL, ### can be null if not imported
+    PRIMARY KEY (id)
 );
 
 ### kraj
@@ -41,30 +42,28 @@ CREATE TABLE country_codes(
 
 CREATE TABLE infectivity(
 	id INTEGER NOT NULL AUTO_INCREMENT,
+    date_of_infection DATE NOT NULL,
     region_code VARCHAR(10) NOT NULL,
     district_code VARCHAR(10) NOT NULL,
-    num_of_ill INTEGER NOT NULL
+    num_of_ill INTEGER NOT NULL,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE country_rates(
-	id INTEGER NOT NULL,
+	id INTEGER NOT NULL AUTO_INCREMENT,
     country_code VARCHAR(2) NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
     new_cases INTEGER NOT NULL,
     tests_done INTEGER NOT NULL,
     population INTEGER NOT NULL,
-    testing_rate FLOAT NOT NULL,
-    positivity_rate FLOAT NOT NULL
+    PRIMARY KEY (id)
 );
 
 ### primary keys ###
-ALTER TABLE ill ADD constraint PK_ill PRIMARY KEY (id);
 ALTER TABLE region_codes ADD constraint PK_region_code PRIMARY KEY (region_code);
 ALTER TABLE district_codes ADD constraint PK_district_code PRIMARY KEY (district_code);
 ALTER TABLE country_codes ADD constraint PK_country_code PRIMARY KEY (country_code);
-ALTER TABLE infectivity ADD constraint PK_infectivity PRIMARY KEY (id);
-ALTER TABLE country_rates ADD constraint PK_country_rates PRIMARY KEY (id);
 ####################
 
 ### foreign keys ###
