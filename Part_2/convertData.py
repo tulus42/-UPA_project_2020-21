@@ -6,6 +6,7 @@ import pymongo
 import mysql.connector
 from sqlite3 import OperationalError
 import datetime
+import time
 
 class convertData:
     '''
@@ -57,6 +58,15 @@ class convertData:
         return self.mongodb[collectionName].find()
 
 
+    def getWeekFirstDay(self, p_year, p_week):
+        firstdayofweek = datetime.datetime.strptime(f'{p_year}-W{int(p_week )- 1}-1', "%Y-W%W-%w").date()
+        return firstdayofweek
+
+    def getWeekLastDay(self, p_year, p_week):
+        firstdayofweek = datetime.datetime.strptime(f'{p_year}-W{int(p_week )- 1}-1', "%Y-W%W-%w").date()
+        lastdayofweek = firstdayofweek + datetime.timedelta(days=6.9)
+        return lastdayofweek
+
     def adjustByConstraints(self, one_data, one_constraint):
         if(one_constraint == 'UPPER'):
             if(one_data == ''):
@@ -96,8 +106,16 @@ class convertData:
                 return one_data
             else:
                 return None
-        elif(one_constraint == 'WEEK_B'):
-            return datetime.datetime.strptime(one_data + '-1', "%Y-W%W-%w")
+        elif(one_constraint == 'WEEK_BEFORE'):
+            to_convert = one_data.split('-')
+            year = to_convert[0]
+            week = to_convert[1].replace('W', '')
+            return self.getWeekFirstDay(year, week)
+        elif(one_constraint == 'WEEK_AFTER'):
+            to_convert = one_data.split('-')
+            year = to_convert[0]
+            week = to_convert[1].replace('W', '')
+            return self.getWeekLastDay(year, week)
 
 
     def obtainImportantData(self, dataset, labels, constraints):
@@ -223,16 +241,30 @@ class convertData:
 
         # select appropriate values
         # vals = self.obtainImportantData(collectionC, ['country_code', 'year_week', 'year_week', 'new_cases', 'tests_done', 'population', 'testing_rate'], ['', '', '', '', '', '', ''])
-        vals = self.obtainImportantData(collectionC, ['country_code', 'year_week', 'year_week', 'new_cases', 'tests_done', 'population'], ['UPPER_C', 'WEEK_B', '', '', '', ''])
-        print(vals[0])
+        vals = self.obtainImportantData(collectionC, ['country_code', 'year_week', 'year_week', 'new_cases', 'tests_done', 'population'], ['UPPER_C', 'WEEK_BEFORE', 'WEEK_AFTER', '', '', ''])
+
+
+        sql_command = "INSERT INTO country_rates(country_code, start_date, end_date, new_cases, tests_done, population) VALUES (%s, %s, %s, %s, %s, %s)"
+        self.executeMany(sql_command, vals)
+        
+
+
 
 Convertor = convertData()
 Convertor.createRelationalDatabase('Corona.sql')
 Convertor.convertCountries()
 Convertor.prepareCountryCodes()
-#Convertor.convertRegions()
-#Convertor.convertDistricts()
-#Convertor.prepareDistinctRegionsAndDistricts()
-#Convertor.convertInfectivity()
-#Convertor.convertIll()
+Convertor.convertRegions()
+Convertor.convertDistricts()
+Convertor.prepareDistinctRegionsAndDistricts()
+Convertor.convertInfectivity()
+Convertor.convertIll()
 Convertor.convertPositivityRate()
+
+
+
+
+#Call function to get dates range 
+#firstdate, lastdate =  getDateRangeFromWeek('2019','2')
+
+#print('print function ',firstdate,' ', lastdate)
