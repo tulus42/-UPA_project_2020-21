@@ -37,7 +37,8 @@ CREATE TABLE district_codes(
 
 CREATE TABLE country_codes(
 	country_code VARCHAR(2) NOT NULL,
-    country_name VARCHAR(100) NOT NULL
+    country_name VARCHAR(100) NOT NULL,
+    population INTEGER NULL
 );
 
 CREATE TABLE infectivity(
@@ -56,7 +57,6 @@ CREATE TABLE country_rates(
     end_date DATE NOT NULL,
     new_cases INTEGER NOT NULL,
     tests_done INTEGER NOT NULL,
-    population INTEGER NOT NULL,
     PRIMARY KEY (id)
 );
 

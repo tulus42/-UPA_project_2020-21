@@ -89,7 +89,9 @@ class convertData:
                 if one_data in self.countries:
                     return one_data
                 else:
+                    sys.stderr.write("\n======================================\n")
                     sys.stderr.write("Missing country code for " + str(one_data) + '\n')
+                    sys.stderr.write("======================================\n")
                     return None
         elif(one_constraint == 'BOOL'):
             if(one_data == 'False'):
@@ -225,8 +227,8 @@ class convertData:
         sql_command = "INSERT INTO ill (date_of_infection, age, gender, region_code, district_code, imported, country_code) VALUES (%s, %s, %s, %s, %s, %s, %s)"
         self.executeMany(sql_command, vals)
 
-        batchSize = 10000
-        i = 0
+        #batchSize = 10000
+        #i = 0
         #for batch in self.batchProvider(vals, batchSize):
             #self.executeMany(sql_command, batch)
 
@@ -240,13 +242,23 @@ class convertData:
         collectionC = self.fetchCollectionData('C')
 
         # select appropriate values
-        # vals = self.obtainImportantData(collectionC, ['country_code', 'year_week', 'year_week', 'new_cases', 'tests_done', 'population', 'testing_rate'], ['', '', '', '', '', '', ''])
-        vals = self.obtainImportantData(collectionC, ['country_code', 'year_week', 'year_week', 'new_cases', 'tests_done', 'population'], ['UPPER_C', 'WEEK_BEFORE', 'WEEK_AFTER', '', '', ''])
+        vals = self.obtainImportantData(collectionC, ['country_code', 'year_week', 'year_week', 'new_cases', 'tests_done'], ['UPPER_C', 'WEEK_BEFORE', 'WEEK_AFTER', '', ''])
 
 
-        sql_command = "INSERT INTO country_rates(country_code, start_date, end_date, new_cases, tests_done, population) VALUES (%s, %s, %s, %s, %s, %s)"
+        sql_command = "INSERT INTO country_rates(country_code, start_date, end_date, new_cases, tests_done) VALUES (%s, %s, %s, %s, %s)"
         self.executeMany(sql_command, vals)
         
+
+    def updateContryPopulation(self):
+        # get the dataset
+        collectionC = self.fetchCollectionData('C')
+
+        # select appropriate values
+        vals = self.obtainImportantData(collectionC, ['population', 'country_code'], ['', 'UPPER_C'])
+        sql_command = "UPDATE country_codes SET population = %s WHERE country_code = %s"
+        distinct_vals = list(set(vals))
+
+        self.executeMany(sql_command, distinct_vals)
 
 
 
@@ -260,11 +272,4 @@ Convertor.prepareDistinctRegionsAndDistricts()
 Convertor.convertInfectivity()
 Convertor.convertIll()
 Convertor.convertPositivityRate()
-
-
-
-
-#Call function to get dates range 
-#firstdate, lastdate =  getDateRangeFromWeek('2019','2')
-
-#print('print function ',firstdate,' ', lastdate)
+Convertor.updateContryPopulation()

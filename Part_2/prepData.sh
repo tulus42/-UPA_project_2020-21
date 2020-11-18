@@ -3,11 +3,6 @@
 # clear the database space
 mongo prepNoSQL.js
 
-# prepare the country dataset
-#cat countries.json | sed 's/,$//' > country_code.json
-#sed 's/]$//' |  sed '1s/^[//'
-
-
 # preprare the A dataset
 curl https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/osoby.min.json --output A
 python3 formatJson.py A | sed "s/\bFalse\b/'False'/g" | sed "s/\bTrue\b/'True'/g" > A.json
