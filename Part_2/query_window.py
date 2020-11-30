@@ -43,3 +43,23 @@ def show_moving_average(table):
 
     messagebox.showinfo("Kĺzavý priemer", "Kĺzavý priemer za obdobie\n"+str(table[0][0])+" - "+str(table[-1][0])+"\nje\n"+str(ema))
 
+def show_region_table(table, query_window):
+    query_window = tk.Tk(className="Region")
+    query_window.geometry("600x500")
+
+    for i in range(len(table)):
+        for j in range(len(table[0])):
+            l = tk.Label(query_window, text=table[i][j])
+            l.grid(row=i, column=j, sticky="wens")
+    
+
+    for x in range(len(table)):
+        tk.Grid.rowconfigure(query_window, x, weight=20)
+
+    for x in range(len(table[0])):
+        tk.Grid.columnconfigure(query_window, x, weight=1)
+
+    query_window.mainloop()
+
+
+

@@ -11,7 +11,7 @@ db = query.MySQLDb()
 
 # main window
 window = tk.Tk(className="Corona")
-window.geometry("600x400")
+window.geometry("600x450")
 
 
 # init objects to show ######
@@ -36,11 +36,10 @@ date_to.grid(row=4, column=3, columnspan=3, sticky="we")
 queryA_option_choice = tk.IntVar()
 queryA_option_choice.set(0)
 
-queryA_options_text = ["Graf abs. prírastku", "Graf perc. prírastku", "Kĺzavý priemer"]
 queryA_options = []
 
 # queryA option radiobutton
-for val, text in enumerate(queryA_options_text):
+for val, text in enumerate(["Graf abs. prírastku", "Graf perc. prírastku", "Kĺzavý priemer"]):
     tmp = tk.Radiobutton(window, 
         text= text,
         width = 18,
@@ -86,12 +85,58 @@ age_to.grid(row=7, column=3, columnspan=3, sticky="wens")
 #########
 # query B
 
+# value of chosen queryB option
+queryB_order_choice = tk.IntVar()
+queryB_order_choice.set(0)
+
+queryB_orders = []
+
+# queryB option radiobutton
+for val, text in enumerate(["zoradenie 1", "zoradenie 2", "zoradenie 3"]):
+    tmp = tk.Radiobutton(window, 
+        text= text,
+        width = 18,
+        indicatoron = 0,
+        variable=queryB_order_choice, 
+        value=val)
+    tmp.grid(row=8, column=val*2, columnspan=2, sticky="wens")
+    queryB_orders.append(tmp)
+
+# DISTRICT listbox
+district_listbox = tk.Listbox(window)
+district_listbox.grid(row=6, column=3, rowspan=2, columnspan=2, sticky="wens")
+
+district_scrollbar = tk.Scrollbar(window)
+district_scrollbar.grid(row=6, rowspan=2, column=5, sticky="wns")
+
+
+
+district_listbox.config(yscrollcommand = district_scrollbar.set)
+district_scrollbar.config(command = district_listbox.yview)
+
+queryB_option = []
+
+
+def regionselect(event):
+    if queryB_choice.get() == 1:
+        selection = event.widget.curselection()
+        if selection:
+            index = selection[0]
+            data = event.widget.get(index)
+
+            district_listbox.delete(0,tk.END)
+            
+            districts = db.get_districts_in_region(data)
+
+            for district in districts:
+                district_listbox.insert(tk.END, district)
+
 # REGION listbox
 region_listbox = tk.Listbox(window)
-region_listbox.grid(row=6, column=0, rowspan=3, columnspan=2, sticky="wens")
+region_listbox.grid(row=6, column=0, rowspan=2, columnspan=2, sticky="wens")
 
 region_scrollbar = tk.Scrollbar(window)
-region_scrollbar.grid(row=6, rowspan=3, column=2, sticky="wns")
+region_scrollbar.grid(row=6, rowspan=2, column=2, sticky="wns")
 
 regions = db.get_regions()
 
@@ -101,22 +146,9 @@ for region in regions:
 region_listbox.config(yscrollcommand = region_scrollbar.set)
 region_scrollbar.config(command = region_listbox.yview)
 
-# DISTRICT listbox
-district_listbox = tk.Listbox(window)
-district_listbox.grid(row=6, column=3, rowspan=3, columnspan=2, sticky="wens")
+region_listbox.bind("<<ListboxSelect>>", regionselect)
 
-district_scrollbar = tk.Scrollbar(window)
-district_scrollbar.grid(row=6, rowspan=3, column=5, sticky="wns")
 
-districts = db.get_districts()
-
-for district in districts:
-    district_listbox.insert(tk.END, district)
-
-district_listbox.config(yscrollcommand = district_scrollbar.set)
-district_scrollbar.config(command = district_listbox.yview)
-
-queryB_option = []
 
 
 
@@ -143,6 +175,8 @@ def prepare_query():
         district_scrollbar.grid_remove()
         for i in queryB_option:
             i.grid_remove()
+        for i in queryB_orders:
+            i.grid_remove()
 
         
     elif actual_query == 1:
@@ -160,21 +194,20 @@ def prepare_query():
 
         actual_queryB_option = queryB_choice.get()
 
-        if actual_queryB_option == 0 or actual_queryB_option == 2:
-            region_listbox.grid()
-            region_scrollbar.grid()
-        else:
-            region_listbox.grid_remove()
-            region_scrollbar.grid_remove()
-
-        if actual_queryB_option == 1 or actual_queryB_option == 2:
+        region_listbox.grid()
+        region_scrollbar.grid()
+    
+        if actual_queryB_option == 1:
             district_listbox.grid()
             district_scrollbar.grid()
+            district_listbox.delete(0,tk.END)
         else:
             district_listbox.grid_remove()
             district_scrollbar.grid_remove()
 
         for i in queryB_option:
+            i.grid()
+        for i in queryB_orders:
             i.grid()
 
     elif actual_query == 2 :
@@ -196,6 +229,8 @@ def prepare_query():
         district_scrollbar.grid_remove()
         for i in queryB_option:
             i.grid_remove()
+        for i in queryB_orders:
+            i.grid_remove()
 
 
 
@@ -206,22 +241,25 @@ def prepare_query():
 query_choice = tk.IntVar()
 query_choice.set(0)
 
-prepare_query()
+queryB_choice = tk.IntVar()
+queryB_choice.set(1)
+
+
 
 # queryB option radiobutton
-queryB_choice = tk.IntVar()
-queryB_choice.set(2)
 
-for val, text in enumerate(["Kraje", "Okresy", "Kraj/Okres"]):
+
+for val, text in enumerate(["Kraje", "Okresy"]):
     tmp = tk.Radiobutton(window, 
         text= text,
         width = 18,
         variable=queryB_choice, 
         command=prepare_query,
         value=val)
-    tmp.grid(row=5, column=val*2, columnspan=2, sticky="wens")
+    tmp.grid(row=5, column=val*3, columnspan=3, sticky="wens")
     queryB_option.append(tmp)
 
+prepare_query()
 
 # constructor for radiobutton for Queries
 query_text = ["Dotaz A", "Dotaz B", "Dotaz C"]
@@ -263,14 +301,27 @@ def HandleQuery():
             query_window.show_moving_average(table)
 
     elif choosen_query == 1:
-        print("ahoj dotaz B")
+        if queryB_choice.get() == 0:
+            index = region_listbox.curselection()
+            if index != ():
+                
+                region = region_listbox.get(index)
+                table = [[0,1,2,3],[2,3,4,5],[3,4,5,6]]
+                query_window.show_region_table(table, query_window)
+    
+        else:
+            index = district_listbox.curselection()
+            if index != ():
+                print(district_listbox.get(index))
+
+        
 
     elif choosen_query == 2:
         print("ahoj dotaz C")
 
 
-    # queryWindow = tk.Tk(className="Dotaz")
-    # queryWindow.mainloop()
+    
+    
 
 
 B1 = tk.Button(window, text="Spracuj dotaz", width=10, command=HandleQuery)
