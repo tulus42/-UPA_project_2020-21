@@ -1,6 +1,7 @@
 import tkinter as tk
 import matplotlib.pyplot as plt
 import datetime
+from tkinter import messagebox
 
 def show_grapfh_abs_illness(table):
     
@@ -28,3 +29,17 @@ def show_grapfh_perc_illness(table, pop):
     plt.ylabel("Prírastok nakazených [%]")
     plt.xlabel("Dátum")
     plt.show()
+
+
+def show_moving_average(table):
+    values = [x[1] for x in table]
+
+    x = 2/(len(values) + 1)
+
+    ema = 0
+
+    for i in values:
+        ema += x * (i - ema)
+
+    messagebox.showinfo("Kĺzavý priemer", "Kĺzavý priemer za obdobie\n"+str(table[0][0])+" - "+str(table[-1][0])+"\nje\n"+str(ema))
+
