@@ -54,10 +54,34 @@ class MySQLDb:
         # fetchone() returns tuple: (value,) -> so get only first value
         return population[0]
 
+    def get_districts(self):
+        self.cursor.execute("SELECT DISTINCT district_name FROM district_codes")
+
+        districts = self.cursor.fetchall()
+        
+        return [x[0] for x in districts]
+
+    def get_regions(self):
+        self.cursor.execute("SELECT DISTINCT region_name FROM region_codes")
+
+        regions = self.cursor.fetchall()
+
+        return [x[0] for x in regions]
+
+    def get_districts_in_region(self, region):
+        self.cursor.execute("SELECT region_code FROM region_codes WHERE region_name = %s", (region,))
+
+        region_code = self.cursor.fetchone()[0]
+
+        self.cursor.execute("SELECT DISTINCT district_name FROM district_codes WHERE region_code = %s", (region_code,))
+
+        districts = self.cursor.fetchall()
+
+        return [x[0] for x in districts]
+
 ##################
 # testing section
 
 # db = MySQLDb()
-# table = db.get_table()
-# for x in table:
-#     print(x)
+# table = db.get_districts_in_region("Zlínský kraj")
+# print(table)

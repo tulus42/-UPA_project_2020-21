@@ -17,19 +17,19 @@ window.geometry("600x400")
 # init objects to show ######
 
 # pick date from-to
-queryA_date_from_label = tk.Label(window, text="Dátum od:")
-queryA_date_from_label.grid(row=3, column=0, columnspan=3)
-queryA_date_from_label.config(font=(44))
-queryA_date_from = tk.Entry(window)
-queryA_date_from.insert(0, "2020-03-01")
-queryA_date_from.grid(row=4, column=0, columnspan=3, sticky="wens")
+date_from_label = tk.Label(window, text="Dátum od:")
+date_from_label.grid(row=3, column=0, columnspan=3)
+date_from_label.config(font=(44))
+date_from = tk.Entry(window)
+date_from.insert(0, "2020-03-01")
+date_from.grid(row=4, column=0, columnspan=3, sticky="we")
 
-queryA_date_to_label = tk.Label(window, text="Dátum do:")
-queryA_date_to_label.grid(row=3, column=3, columnspan=3)
-queryA_date_to_label.config(font=(44))
-queryA_date_to = tk.Entry(window)
-queryA_date_to.insert(0, "2020-11-30")
-queryA_date_to.grid(row=4, column=3, columnspan=3, sticky="wens")
+date_to_label = tk.Label(window, text="Dátum do:")
+date_to_label.grid(row=3, column=3, columnspan=3)
+date_to_label.config(font=(44))
+date_to = tk.Entry(window)
+date_to.insert(0, "2020-11-30")
+date_to.grid(row=4, column=3, columnspan=3, sticky="we")
 
 
 # value of chosen queryA option
@@ -60,28 +60,63 @@ for val, text in enumerate(["Muži", "Ženy", "Nezáleží"]):
         width = 18,
         variable=queryA_param_gender, 
         value=val)
-    tmp.grid(row=val+5, column=0, columnspan=2, sticky="wns")
+    tmp.grid(row=val+5, column=0, columnspan=2, sticky="wens")
     queryA_options.append(tmp)
 
 # imported
 queryA_param_imported = tk.IntVar()
 
-queryA_param_imported_chbox = tk.Checkbutton(window, text="Importované", variable=queryA_param_imported)
+queryA_param_imported_chbox = tk.Checkbutton(window, text="Len importované", variable=queryA_param_imported)
 queryA_param_imported_chbox.grid(row=5, column=2, columnspan=4, sticky="wens")
 
 # age
 age_from_label = tk.Label(window, text="Vek od:")
-age_from_label.grid(row=6, column=2)
+age_from_label.grid(row=6, column=2, sticky="wens")
 age_from = tk.Entry(window)
 age_from.insert(0, "0")
 age_from.grid(row=6, column=3, columnspan=3, sticky="wens")
 
 age_to_label = tk.Label(window, text="Vek do:")
-age_to_label.grid(row=7, column=2)
+age_to_label.grid(row=7, column=2, sticky="wens")
 age_to = tk.Entry(window)
 age_to.insert(0, "100")
 age_to.grid(row=7, column=3, columnspan=3, sticky="wens")
 
+
+#########
+# query B
+
+# REGION listbox
+region_listbox = tk.Listbox(window)
+region_listbox.grid(row=6, column=0, rowspan=3, columnspan=2, sticky="wens")
+
+region_scrollbar = tk.Scrollbar(window)
+region_scrollbar.grid(row=6, rowspan=3, column=2, sticky="wns")
+
+regions = db.get_regions()
+
+for region in regions:
+    region_listbox.insert(tk.END, region)
+
+region_listbox.config(yscrollcommand = region_scrollbar.set)
+region_scrollbar.config(command = region_listbox.yview)
+
+# DISTRICT listbox
+district_listbox = tk.Listbox(window)
+district_listbox.grid(row=6, column=3, rowspan=3, columnspan=2, sticky="wens")
+
+district_scrollbar = tk.Scrollbar(window)
+district_scrollbar.grid(row=6, rowspan=3, column=5, sticky="wns")
+
+districts = db.get_districts()
+
+for district in districts:
+    district_listbox.insert(tk.END, district)
+
+district_listbox.config(yscrollcommand = district_scrollbar.set)
+district_scrollbar.config(command = district_listbox.yview)
+
+queryB_option = []
 
 
 
@@ -90,10 +125,10 @@ def prepare_query():
     actual_query = query_choice.get()
     
     if actual_query == 0:
-        queryA_date_from_label.grid()
-        queryA_date_from.grid()
-        queryA_date_to_label.grid()
-        queryA_date_to.grid()
+        date_from_label.grid()
+        date_from.grid()
+        date_to_label.grid()
+        date_to.grid()
         queryA_param_imported_chbox.grid()
         age_from_label.grid()
         age_from.grid()
@@ -102,12 +137,19 @@ def prepare_query():
         for i in queryA_options:
             i.grid()
 
+        region_listbox.grid_remove()
+        region_scrollbar.grid_remove()
+        district_listbox.grid_remove()
+        district_scrollbar.grid_remove()
+        for i in queryB_option:
+            i.grid_remove()
+
         
     elif actual_query == 1:
-        queryA_date_from_label.grid_remove()
-        queryA_date_from.grid_remove()
-        queryA_date_to_label.grid_remove()
-        queryA_date_to.grid_remove()
+        date_from_label.grid()
+        date_from.grid()
+        date_to_label.grid()
+        date_to.grid()
         queryA_param_imported_chbox.grid_remove()
         age_from_label.grid_remove()
         age_from.grid_remove()
@@ -116,17 +158,43 @@ def prepare_query():
         for i in queryA_options:
             i.grid_remove()
 
+        actual_queryB_option = queryB_choice.get()
+
+        if actual_queryB_option == 0 or actual_queryB_option == 2:
+            region_listbox.grid()
+            region_scrollbar.grid()
+        else:
+            region_listbox.grid_remove()
+            region_scrollbar.grid_remove()
+
+        if actual_queryB_option == 1 or actual_queryB_option == 2:
+            district_listbox.grid()
+            district_scrollbar.grid()
+        else:
+            district_listbox.grid_remove()
+            district_scrollbar.grid_remove()
+
+        for i in queryB_option:
+            i.grid()
+
     elif actual_query == 2 :
-        queryA_date_from_label.grid_remove()
-        queryA_date_from.grid_remove()
-        queryA_date_to_label.grid_remove()
-        queryA_date_to.grid_remove()
+        date_from_label.grid_remove()
+        date_from.grid_remove()
+        date_to_label.grid_remove()
+        date_to.grid_remove()
         queryA_param_imported_chbox.grid_remove()
         age_from_label.grid_remove()
         age_from.grid_remove()
         age_to_label.grid_remove()
         age_to.grid_remove()
         for i in queryA_options:
+            i.grid_remove()
+
+        region_listbox.grid_remove()
+        region_scrollbar.grid_remove()
+        district_listbox.grid_remove()
+        district_scrollbar.grid_remove()
+        for i in queryB_option:
             i.grid_remove()
 
 
@@ -139,6 +207,21 @@ query_choice = tk.IntVar()
 query_choice.set(0)
 
 prepare_query()
+
+# queryB option radiobutton
+queryB_choice = tk.IntVar()
+queryB_choice.set(2)
+
+for val, text in enumerate(["Kraje", "Okresy", "Kraj/Okres"]):
+    tmp = tk.Radiobutton(window, 
+        text= text,
+        width = 18,
+        variable=queryB_choice, 
+        command=prepare_query,
+        value=val)
+    tmp.grid(row=5, column=val*2, columnspan=2, sticky="wens")
+    queryB_option.append(tmp)
+
 
 # constructor for radiobutton for Queries
 query_text = ["Dotaz A", "Dotaz B", "Dotaz C"]
@@ -165,7 +248,7 @@ def HandleQuery():
         choosen_option = queryA_option_choice.get()
         
         # get table with illness increase for all A options
-        table = db.get_ill_increase_in_time(queryA_date_from.get(), queryA_date_to.get(), age_from.get(), age_to.get(), queryA_param_gender.get(), queryA_param_imported.get())
+        table = db.get_ill_increase_in_time(date_from.get(), date_to.get(), age_from.get(), age_to.get(), queryA_param_gender.get(), queryA_param_imported.get())
 
         # show graph of absolute illness increase
         if choosen_option == 0:
