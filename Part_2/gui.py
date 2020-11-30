@@ -2,7 +2,7 @@
 
 import tkinter as tk
 import query
-import matplotlib
+import query_window
 
 
 
@@ -17,8 +17,10 @@ window.geometry("600x200")
 # init objects to show
 date_from_label = tk.Label(window, text="Od:")
 date_from = tk.Entry(window)
+date_from.insert(0, "2020-03-01")
 date_to_label = tk.Label(window, text="Do:")
 date_to = tk.Entry(window)
+date_to.insert(0, "2020-11-30")
 
 
 # value of chosen queryA option
@@ -97,13 +99,19 @@ def HandleQuery():
     choosen_query = query_choice.get()
     
     if choosen_query == 0:
+        # get options for queryA
         choosen_option = queryA_option_choice.get()
+        # get table with illness increase for all A options
+        table = db.get_ill_increase_in_time(date_from.get(), date_to.get())
 
+        # show graph of absolute illness increase
         if choosen_option == 0:
-            print("ahoj dotaz A opt 1")
+            query_window.show_grapfh_abs_illness(table)
 
+        # show graph of percentual illness increase
         elif choosen_option == 1:
-            print("ahoj dotaz A opt 2")
+            pop = db.get_country_population("CZ")
+            query_window.show_grapfh_perc_illness(table, pop)
 
         elif choosen_option == 2:
             print("ahoj dotaz A opt 3")
@@ -115,8 +123,8 @@ def HandleQuery():
         print("ahoj dotaz C")
 
 
-    queryWindow = tk.Tk(className="Dotaz")
-    queryWindow.mainloop()
+    # queryWindow = tk.Tk(className="Dotaz")
+    # queryWindow.mainloop()
 
 
 B1 = tk.Button(window, text="Spracuj dotaz", width=10, command=HandleQuery)
