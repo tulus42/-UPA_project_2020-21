@@ -3,6 +3,7 @@
 import tkinter as tk
 import query
 import query_window
+import datetime
 
 
 
@@ -86,50 +87,45 @@ age_to.grid(row=7, column=3, columnspan=3, sticky="wens")
 # query B
 
 # value of chosen queryB option
-queryB_order_choice = tk.IntVar()
-queryB_order_choice.set(0)
+# queryB_order_choice = tk.IntVar()
+# queryB_order_choice.set(0)
 
-queryB_orders = []
+# queryB_orders = []
 
-# queryB option radiobutton
-for val, text in enumerate(["zoradenie 1", "zoradenie 2", "zoradenie 3"]):
-    tmp = tk.Radiobutton(window, 
-        text= text,
-        width = 18,
-        indicatoron = 0,
-        variable=queryB_order_choice, 
-        value=val)
-    tmp.grid(row=8, column=val*2, columnspan=2, sticky="wens")
-    queryB_orders.append(tmp)
+# # queryB option radiobutton
+# for val, text in enumerate(["zoradenie 1", "zoradenie 2", "zoradenie 3"]):
+#     tmp = tk.Radiobutton(window, 
+#         text= text,
+#         width = 18,
+#         indicatoron = 0,
+#         variable=queryB_order_choice, 
+#         value=val)
+#     tmp.grid(row=8, column=val*2, columnspan=2, sticky="wens")
+#     queryB_orders.append(tmp)
 
 # DISTRICT listbox
-district_listbox = tk.Listbox(window)
-district_listbox.grid(row=6, column=3, rowspan=2, columnspan=2, sticky="wens")
+# district_listbox = tk.Listbox(window)
+# district_listbox.grid(row=6, column=3, rowspan=2, columnspan=2, sticky="wens")
 
-district_scrollbar = tk.Scrollbar(window)
-district_scrollbar.grid(row=6, rowspan=2, column=5, sticky="wns")
+# district_scrollbar = tk.Scrollbar(window)
+# district_scrollbar.grid(row=6, rowspan=2, column=5, sticky="wns")
 
 
 
-district_listbox.config(yscrollcommand = district_scrollbar.set)
-district_scrollbar.config(command = district_listbox.yview)
+# district_listbox.config(yscrollcommand = district_scrollbar.set)
+# district_scrollbar.config(command = district_listbox.yview)
 
 queryB_option = []
 
 
-def regionselect(event):
-    if queryB_choice.get() == 1:
-        selection = event.widget.curselection()
-        if selection:
-            index = selection[0]
-            data = event.widget.get(index)
+def regionSelect():
+    prepare_query()
+    if queryB_choice.get() == 1:        
+        regions = db.get_regions()
 
-            district_listbox.delete(0,tk.END)
-            
-            districts = db.get_districts_in_region(data)
+        for region in regions:
+            region_listbox.insert(tk.END, region)
 
-            for district in districts:
-                district_listbox.insert(tk.END, district)
 
 # REGION listbox
 region_listbox = tk.Listbox(window)
@@ -138,15 +134,12 @@ region_listbox.grid(row=6, column=0, rowspan=2, columnspan=2, sticky="wens")
 region_scrollbar = tk.Scrollbar(window)
 region_scrollbar.grid(row=6, rowspan=2, column=2, sticky="wns")
 
-regions = db.get_regions()
 
-for region in regions:
-    region_listbox.insert(tk.END, region)
 
 region_listbox.config(yscrollcommand = region_scrollbar.set)
 region_scrollbar.config(command = region_listbox.yview)
 
-region_listbox.bind("<<ListboxSelect>>", regionselect)
+# region_listbox.bind("<<ListboxSelect>>", regionselect)
 
 
 
@@ -171,12 +164,12 @@ def prepare_query():
 
         region_listbox.grid_remove()
         region_scrollbar.grid_remove()
-        district_listbox.grid_remove()
-        district_scrollbar.grid_remove()
+        # district_listbox.grid_remove()
+        # district_scrollbar.grid_remove()
         for i in queryB_option:
             i.grid_remove()
-        for i in queryB_orders:
-            i.grid_remove()
+        # for i in queryB_orders:
+        #     i.grid_remove()
 
         
     elif actual_query == 1:
@@ -194,21 +187,21 @@ def prepare_query():
 
         actual_queryB_option = queryB_choice.get()
 
-        region_listbox.grid()
-        region_scrollbar.grid()
+        # region_listbox.grid()
+        # region_scrollbar.grid()
     
         if actual_queryB_option == 1:
-            district_listbox.grid()
-            district_scrollbar.grid()
-            district_listbox.delete(0,tk.END)
+            region_listbox.grid()
+            region_scrollbar.grid()
+            region_listbox.delete(0,tk.END)
         else:
-            district_listbox.grid_remove()
-            district_scrollbar.grid_remove()
+            region_listbox.grid_remove()
+            region_scrollbar.grid_remove()
 
         for i in queryB_option:
             i.grid()
-        for i in queryB_orders:
-            i.grid()
+        # for i in queryB_orders:
+        #     i.grid()
 
     elif actual_query == 2 :
         date_from_label.grid_remove()
@@ -225,12 +218,12 @@ def prepare_query():
 
         region_listbox.grid_remove()
         region_scrollbar.grid_remove()
-        district_listbox.grid_remove()
-        district_scrollbar.grid_remove()
+        # district_listbox.grid_remove()
+        # district_scrollbar.grid_remove()
         for i in queryB_option:
             i.grid_remove()
-        for i in queryB_orders:
-            i.grid_remove()
+        # for i in queryB_orders:
+        #     i.grid_remove()
 
 
 
@@ -242,19 +235,19 @@ query_choice = tk.IntVar()
 query_choice.set(0)
 
 queryB_choice = tk.IntVar()
-queryB_choice.set(1)
+queryB_choice.set(0)
 
 
 
 # queryB option radiobutton
 
 
-for val, text in enumerate(["Kraje", "Okresy"]):
+for val, text in enumerate(["Všetky kraje", "Výber krajov"]):
     tmp = tk.Radiobutton(window, 
         text= text,
         width = 18,
         variable=queryB_choice, 
-        command=prepare_query,
+        command=regionSelect,
         value=val)
     tmp.grid(row=5, column=val*3, columnspan=3, sticky="wens")
     queryB_option.append(tmp)
@@ -281,6 +274,7 @@ for val, text in enumerate(query_text):
 def HandleQuery():
     choosen_query = query_choice.get()
     
+    # QUERY A
     if choosen_query == 0:
         # get options for queryA
         choosen_option = queryA_option_choice.get()
@@ -300,20 +294,40 @@ def HandleQuery():
         elif choosen_option == 2:
             query_window.show_moving_average(table)
 
+    # QUERY B
     elif choosen_query == 1:
+        
+        # whole country - show by regions
         if queryB_choice.get() == 0:
+            table = []
+            
+            start_date = date_from.get()
+            start_date = datetime.date(int(start_date[0:4]), int(start_date[5:7]), int(start_date[8:10]))
+            end_date = date_to.get()
+            end_date = datetime.date(int(end_date[0:4]), int(end_date[5:7]), int(end_date[8:10]))
+            delta = datetime.timedelta(days=1)
+
+            while start_date <= end_date:
+                table.append(db.get_data_per_day_groupby_region(start_date))
+                start_date += delta
+
+            for x in table:
+                print(x)
+            # table.append(db.get_data_per_day_groupby_region(date_i))
+
+            # query_window.show_country_graph()
+
+        # choice by region - show by districts
+        else:
             index = region_listbox.curselection()
             if index != ():
                 
                 region = region_listbox.get(index)
-                table = [[0,1,2,3],[2,3,4,5],[3,4,5,6]]
-                query_window.show_region_table(table, query_window)
-    
-        else:
-            index = district_listbox.curselection()
-            if index != ():
-                print(district_listbox.get(index))
 
+                query_window.show_region_graph(region, date_from.get(), date_to.get())
+    
+        
+            
         
 
     elif choosen_query == 2:
