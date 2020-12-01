@@ -113,12 +113,12 @@ region_scrollbar.config(command = region_listbox.yview)
 
 queryC_option = []
 
-# REGION listbox
+# COUNTRY listbox
 country_listbox = tk.Listbox(window)
-country_listbox.grid(row=6, column=0, rowspan=3, columnspan=5, sticky="wens")
+country_listbox.grid(row=6, column=0, rowspan=2, columnspan=4, sticky="wens")
 
 country_scrollbar = tk.Scrollbar(window)
-country_scrollbar.grid(row=6, rowspan=3, column=5, sticky="wns")
+country_scrollbar.grid(row=6, rowspan=2, column=4, sticky="wns")
 
 country_listbox.config(yscrollcommand = country_scrollbar.set)
 country_scrollbar.config(command = country_listbox.yview)
@@ -129,6 +129,18 @@ for country in countries:
     country_listbox.insert(tk.END, country)
 
 
+
+def corelation():
+    index = country_listbox.curselection()
+    if index != ():
+        country = country_listbox.get(index)
+
+        table = db.get_rates_cases_tests_from_to_country(date_from.get(), date_to.get(), country)
+        query_window.evaluate_corelation(date_from.get(), date_to.get(), country, table)
+    
+    
+coutnry_button = tk.Button(window, text="Vypočítaj koeficient korelácie", command=corelation, padx=5)
+coutnry_button.grid(row=8, column=0, columnspan=6)
 
 
 
@@ -156,7 +168,7 @@ def prepare_query():
         country_scrollbar.grid_remove()
         for i in queryC_option:
             i.grid_remove()
-       
+        coutnry_button.grid_remove()
 
         
     elif actual_query == 1:
@@ -184,6 +196,7 @@ def prepare_query():
         country_scrollbar.grid_remove()
         for i in queryC_option:
             i.grid_remove()
+        coutnry_button.grid_remove()
 
 
     elif actual_query == 2 :
@@ -205,6 +218,8 @@ def prepare_query():
         country_scrollbar.grid()
         for i in queryC_option:
             i.grid()
+        coutnry_button.grid()
+
 
     regionSelect()
 
@@ -248,6 +263,8 @@ for val, text in enumerate(["Vzťah nových prípadov a testovaní", "Percentuá
     queryC_option.append(tmp)
 
 prepare_query()
+
+
 
 
 # constructor for radiobutton for Queries
@@ -341,12 +358,8 @@ def HandleQuery():
             
 
 
-    
-    
-
 
 B1 = tk.Button(window, text="Spracuj dotaz", width=10, command=HandleQuery)
-
 B1.grid(row=9, column=0, columnspan=6)
 
 

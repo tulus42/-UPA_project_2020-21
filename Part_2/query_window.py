@@ -4,6 +4,7 @@ import datetime
 from tkinter import messagebox
 from matplotlib.widgets import Slider  # import the Slider widget
 import numpy as np
+from math import sqrt
 
 def show_grapfh_abs_illness(table):
     
@@ -147,3 +148,24 @@ def show_country_perc_graph(table, country):
 
     plt.show()  
 
+def evaluate_corelation(date_from, date_to, country, table):
+    lines = [x for x in table]
+    x = [int(x[1]) for x in lines]   # new cases
+    y = [int(x[2]) for x in lines]   # tests done
+
+
+    n = len(table)
+    xy = [x[i]*y[i] for i in range(n)]
+    x2 = [i**2 for i in x]
+    y2 = [i**2 for i in y]
+    sumX = sum(x)
+    sumY = sum(y)
+    sumXY = sum(xy)
+    sumX2 = sum(x2)
+    sumY2 = sum(y2)
+    sum2X = sumX**2
+    sum2Y = sumY**2
+  
+    corelation = (n * sumXY - sumX * sumY)/(sqrt(n * sumX2 - sum2X) * sqrt(n * sumY2 - sum2Y))
+
+    messagebox.showinfo("Korelačný koeficient", "Korelačný koeficient pre " + country + " za obdobie\n"+str(date_from)+" - "+str(date_to)+"\nje\n"+str(corelation))
