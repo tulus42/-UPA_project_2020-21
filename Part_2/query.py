@@ -86,7 +86,7 @@ class MySQLDb:
 
         # IDK what you want, here is reg_code, maybe you want region names then swap region_code for region_name in SELECT and add 
         # INNER JOIN region_codes USING(region_code) after FROM infectivity, or if just numbers, you know what to do. :D 
-        self.cursor.execute("SELECT region_code, COUNT(num_of_ill) FROM infectivity WHERE date_of_infection=%s GROUP BY region_code;", (date,))
+        self.cursor.execute("SELECT region_name, COUNT(num_of_ill) FROM infectivity INNER JOIN region_codes USING(region_code) WHERE date_of_infection=%s GROUP BY region_code;", (date,))
 
         data = self.cursor.fetchall()
 
@@ -100,7 +100,7 @@ class MySQLDb:
 
         # IDK what you want, here is district_code, maybe you want district names then swap district_code for district_name in SELECT and add 
         # INNER JOIN district_codes USING(district_code) after FROM infectivity and change infectivity.region_code='<region_code>', or if just numbers, you know what to do. :D 
-        self.cursor.execute("SELECT district_code, COUNT(num_of_ill) FROM infectivity WHERE date_of_infection=%s AND region_code=%s GROUP BY district_code;", (date, region_code,))
+        self.cursor.execute("SELECT district_name, COUNT(num_of_ill) FROM infectivity INNER JOIN district_codes USING(district_code) WHERE date_of_infection=%s AND infectivity.region_code=%s GROUP BY district_code;", (date, region_code,))
 
         data = self.cursor.fetchall()
 
