@@ -86,7 +86,7 @@ class MySQLDb:
 
         # IDK what you want, here is reg_code, maybe you want region names then swap region_code for region_name in SELECT and add 
         # INNER JOIN region_codes USING(region_code) after FROM infectivity, or if just numbers, you know what to do. :D 
-        self.cursor.execute("SELECT region_name, COUNT(num_of_ill) FROM infectivity INNER JOIN region_codes USING(region_code) WHERE date_of_infection=%s GROUP BY region_code;", (date,))
+        self.cursor.execute("SELECT region_name, SUM(num_of_ill) FROM infectivity INNER JOIN region_codes USING(region_code) WHERE date_of_infection=%s GROUP BY region_code;", (date,))
 
         data = self.cursor.fetchall()
 
@@ -100,17 +100,68 @@ class MySQLDb:
 
         # IDK what you want, here is district_code, maybe you want district names then swap district_code for district_name in SELECT and add 
         # INNER JOIN district_codes USING(district_code) after FROM infectivity and change infectivity.region_code='<region_code>', or if just numbers, you know what to do. :D 
-        self.cursor.execute("SELECT district_name, COUNT(num_of_ill) FROM infectivity INNER JOIN district_codes USING(district_code) WHERE date_of_infection=%s AND infectivity.region_code=%s GROUP BY district_code;", (date, region_code,))
+        self.cursor.execute("SELECT district_name, SUM(num_of_ill) FROM infectivity INNER JOIN district_codes USING(district_code) WHERE date_of_infection=%s AND infectivity.region_code=%s GROUP BY district_code;", (date, region_code,))
 
         data = self.cursor.fetchall()
 
         #return [x[1] for x in data]
-        return data    
+        return data
+
+    def get_rates_cases_tests_from_to_country(self, start_date, end_date, country):
+        self.cursor.execute("SELECT country_code FROM country_codes WHERE country_name = %s", (country,))
+
+        country_code = self.cursor.fetchone()[0]
+
+        self.cursor.execute("SELECT start_date, new_cases, tests_done, ((tests_done/population)*100000) FROM country_rates INNER JOIN country_codes USING(country_code) WHERE start_date>=%s AND end_date<=%s AND country_code=%s ORDER BY start_date", (start_date, end_date, country_code,))
+
+        data = self.cursor.fetchall()
+
+        #return [x[1] for x in data]
+        return data
+
+    def get_percenage_per_country_from_to(self, start_date, end_date, country):
+        self.cursor.execute("SELECT country_code FROM country_codes WHERE country_name = %s", (country,))
+
+        country_code = self.cursor.fetchone()[0]
+
+        self.cursor.execute("SELECT start_date, ((new_cases/tests_done)*100) FROM country_rates WHERE start_date>=%s AND end_date<=%s AND country_code=%s ORDER BY start_date", (start_date, end_date, country_code,))
+
+        data = self.cursor.fetchall()
+
+        #return [x[1] for x in data]
+        return data
+
+"""
+    def get_cases_country_from_to(self, start_date, end_date, country):
+        self.cursor.execute("SELECT country_code FROM country_codes WHERE country_name = %s", (country,))
+
+        country_code = self.cursor.fetchone()[0]
+
+        self.cursor.execute("SELECT start_date, new_cases FROM country_rates WHERE start_date>=%s AND end_date<=%s AND country_code=%s ORDER BY start_date", (start_date, end_date, country_code,))
+
+        data = self.cursor.fetchall()
+
+        #return [x[1] for x in data]
+        return data
+
+    def get_percenage_per_country_from_to(self, start_date, end_date, country):
+        self.cursor.execute("SELECT country_code FROM country_codes WHERE country_name = %s", (country,))
+
+        country_code = self.cursor.fetchone()[0]
+
+        self.cursor.execute("SELECT start_date, ((new_cases/tests_done)*100) FROM country_rates WHERE start_date>=%s AND end_date<=%s AND country_code=%s ORDER BY start_date", (start_date, end_date, country_code,))
+
+        data = self.cursor.fetchall()
+
+        #return [x[1] for x in data]
+        return data
+"""
 
 ##################
 # testing section
 
 db = MySQLDb()
-table = db.get_data_per_day_groupby_district_in_region("2020-11-04", "Zlínský kraj")
+#table = db.get_data_per_day_groupby_district_in_region("2020-11-04", "Zlínský kraj")
 #table = db.get_data_per_day_groupby_region("2020-11-04")
+table = db.get_rates_cases_tests_from_to_country("2020-10-12", "2020-12-12", "Německo")
 print(table)
