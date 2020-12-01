@@ -16,9 +16,13 @@ if [ ! -f /usr/bin/mysql ]
 		sudo apt-get update -y
 		sudo apt-get install -y mysql-server
 
-		sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'ahojahojahoj';"
+		sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'ahojahojahoj';"
+		sudo mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost';"
 		sudo mysql -e "DROP DATABASE test;"
 		sudo mysql -e "FLUSH PRIVILEGES;"
+
+		sudo service mysql stop
+		sudo service mysql start
 	else
 		echo "MySQL already installed."
 fi
