@@ -115,10 +115,10 @@ queryC_option = []
 
 # REGION listbox
 country_listbox = tk.Listbox(window)
-country_listbox.grid(row=6, column=0, rowspan=3, columnspan=3, sticky="wens")
+country_listbox.grid(row=6, column=0, rowspan=3, columnspan=5, sticky="wens")
 
 country_scrollbar = tk.Scrollbar(window)
-country_scrollbar.grid(row=6, rowspan=3, column=3, sticky="wns")
+country_scrollbar.grid(row=6, rowspan=3, column=5, sticky="wns")
 
 country_listbox.config(yscrollcommand = country_scrollbar.set)
 country_scrollbar.config(command = country_listbox.yview)

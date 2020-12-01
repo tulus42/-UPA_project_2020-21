@@ -126,7 +126,6 @@ def show_country_graph(table, country):
     plt.axes([0.1, 0.2, 0.8, 0.7])
     plt.plot( dates, new_cases, marker='', markerfacecolor='blue', markersize=12, color='skyblue', linewidth=4, label="Nové prípady")
     plt.plot( dates, tests_done, marker='', color='olive', linewidth=2, label="Vykonané testy")
-    # plt.plot( dates, tests_for100k, marker='', color='olive', linewidth=2, linestyle='dashed', label="Testov na 100k obyvateľov")
     plt.legend()
     plt.yscale(value="log")
     plt.title(country)
@@ -138,7 +137,6 @@ def show_country_perc_graph(table, country):
     lines = [x for x in table]
     dates = [x[0] for x in lines]
     values = [x[1] for x in lines]
-    print(values)
 
     plt.axes([0.1, 0.2, 0.8, 0.65])
     plt.plot( dates, values, marker='', markerfacecolor='blue', markersize=12, color='skyblue', linewidth=4)
