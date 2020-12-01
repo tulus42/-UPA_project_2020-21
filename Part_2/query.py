@@ -139,7 +139,7 @@ class MySQLDb:
         return data
 
     def get_viable_eu_countries(self):
-        self.cursor.execute("SELECT DISTINCT country_name FROM country_rates LEFT JOIN country_codes USING(country_code);")
+        self.cursor.execute("SELECT DISTINCT country_name FROM country_rates LEFT JOIN country_codes USING(country_code) ORDER BY country_name;")
 
         data = self.cursor.fetchall()
 
