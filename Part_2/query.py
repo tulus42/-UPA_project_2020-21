@@ -86,7 +86,7 @@ class MySQLDb:
 
         # IDK what you want, here is reg_code, maybe you want region names then swap region_code for region_name in SELECT and add 
         # INNER JOIN region_codes USING(region_code) after FROM infectivity, or if just numbers, you know what to do. :D 
-        self.cursor.execute("SELECT region_name, SUM(num_of_ill) FROM infectivity INNER JOIN region_codes USING(region_code) WHERE date_of_infection=%s GROUP BY region_code;", (date,))
+        self.cursor.execute("SELECT region_name, SUM(num_of_ill) FROM infectivity INNER JOIN region_codes USING(region_code) WHERE date_of_infection=%s GROUP BY region_code ORDER BY region_name;", (date,))
 
         data = self.cursor.fetchall()
 
@@ -100,7 +100,7 @@ class MySQLDb:
 
         # IDK what you want, here is district_code, maybe you want district names then swap district_code for district_name in SELECT and add 
         # INNER JOIN district_codes USING(district_code) after FROM infectivity and change infectivity.region_code='<region_code>', or if just numbers, you know what to do. :D 
-        self.cursor.execute("SELECT district_name, SUM(num_of_ill) FROM infectivity INNER JOIN district_codes USING(district_code) WHERE date_of_infection=%s AND infectivity.region_code=%s GROUP BY district_code;", (date, region_code,))
+        self.cursor.execute("SELECT district_name, SUM(num_of_ill) FROM infectivity INNER JOIN district_codes USING(district_code) WHERE date_of_infection=%s AND infectivity.region_code=%s GROUP BY district_code ORDER BY district_name;", (date, region_code,))
 
         data = self.cursor.fetchall()
 
@@ -160,8 +160,8 @@ class MySQLDb:
 ##################
 # testing section
 
-db = MySQLDb()
+#db = MySQLDb()
 #table = db.get_data_per_day_groupby_district_in_region("2020-11-04", "Zlínský kraj")
 #table = db.get_data_per_day_groupby_region("2020-11-04")
-table = db.get_rates_cases_tests_from_to_country("2020-10-12", "2020-12-12", "Německo")
-print(table)
+#table = db.get_rates_cases_tests_from_to_country("2020-10-12", "2020-12-12", "Německo")
+#print(table)
