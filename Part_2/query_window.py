@@ -17,6 +17,7 @@ def show_grapfh_abs_illness(table):
     ax.set_xlim([dates[0], dates[-1]])
     plt.ylabel("Prírastok nakazených")
     plt.xlabel("Dátum")
+    plt.title("Nové prípady")
     plt.show()
 
 
@@ -24,27 +25,37 @@ def show_grapfh_perc_illness(table, pop):
     
     dates = [x[0] for x in table]
     values = [x[1]*100/pop for x in table]
+    perc_values = [values[i+1]/values[i] for i in range(len(values)-1)]
 
     fig, ax = plt.subplots()
-    ax.plot_date(dates, values, marker='', linestyle='solid')
+    ax.plot_date(dates[1:], perc_values, marker='', linestyle='solid')
     fig.autofmt_xdate()
     ax.set_xlim([dates[0], dates[-1]])
-    plt.ylabel("Prírastok nakazených [%]")
+    plt.ylabel("Percentuálny nárast")
     plt.xlabel("Dátum")
+    plt.title("Percetuálny prírastok v nasledujúci deň")
     plt.show()
 
 
 def show_moving_average(table):
-    values = [x[1] for x in table]
+    dates = [x[0] for x in table]
+    values = [int(x[1]) for x in table]
 
-    x = 2/(len(values) + 1)
+    
+    week_values = [values[i:i+6] for i in range(len(values)-6)]
+    week_sorted_values = [sorted(i) for i in week_values]
+    week_median = [i[3] for i in week_sorted_values]
 
-    ema = 0
+    fig, ax = plt.subplots()
+    ax.plot_date(dates[6:], week_median, marker='', linestyle='solid')
+    fig.autofmt_xdate()
+    ax.set_xlim([dates[0], dates[-1]])
+    plt.title("Kĺzavý medián")
+    plt.ylabel("Medián nových prípadov")
+    plt.xlabel("Dátum")
+    plt.show()
 
-    for i in values:
-        ema += x * (i - ema)
-
-    messagebox.showinfo("Kĺzavý priemer", "Kĺzavý priemer za obdobie\n"+str(table[0][0])+" - "+str(table[-1][0])+"\nje\n"+str(ema))
+    plt.show()  
 
 
 
