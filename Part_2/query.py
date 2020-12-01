@@ -68,6 +68,13 @@ class MySQLDb:
 
         return [x[0] for x in regions]
 
+    def get_countries(self):
+        self.cursor.execute("SELECT DISTINCT country_name FROM country_codes")
+
+        regions = self.cursor.fetchall()
+
+        return [x[0] for x in regions]
+
     def get_districts_in_region(self, region):
         self.cursor.execute("SELECT region_code FROM region_codes WHERE region_name = %s", (region,))
 
