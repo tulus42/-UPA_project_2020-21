@@ -305,17 +305,17 @@ def HandleQuery():
             start_date = datetime.date(int(start_date[0:4]), int(start_date[5:7]), int(start_date[8:10]))
             end_date = date_to.get()
             end_date = datetime.date(int(end_date[0:4]), int(end_date[5:7]), int(end_date[8:10]))
+            print(end_date)
             delta = datetime.timedelta(days=1)
 
             while start_date <= end_date:
                 table.append(db.get_data_per_day_groupby_region(start_date))
                 start_date += delta
 
-            for x in table:
-                print(x)
+            
             # table.append(db.get_data_per_day_groupby_region(date_i))
 
-            # query_window.show_country_graph()
+            query_window.show_country_graph(table)
 
         # choice by region - show by districts
         else:
