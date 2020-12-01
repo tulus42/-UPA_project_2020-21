@@ -32,9 +32,11 @@
 \item Adrián Tulušák (xtulus00)
 \end{itemize}
 
-\section{Úvod}
+\section*{Úvod}
+Cieľom tohto projektu bolo zoznámenie sa so spracovaním neštruktúrovaných dát, s~ich prípravou a~spracovaním pre ďalšie využitie. Následne vďaka nadobudnutým vedomostiam navrhnúť nástroje, ktoré umožnia automatické spracovanie a~nahranie dát do NoSQL databáze. Z~NoSQL databáze následne vybrať vhodné data, ktoré je po úprave možné uložiť do vhodne navrhnutej relačnej databázy. Poslednou časťou projektu je návrh a~implementácia prostredia na zodpovedanie dvoch zadaných dotazov a~jedného vlastného k~danej téme. 
 
-\section{Príprava dát}
+Témy tohto projektu boli vopred zadané a~pre riešenie nášho projektu sme si vybrali tému COVID-19. Dáta využité na zodpovedanie dotazov pochádzajú z~verejne dostupných zdrojov. Na návrh systémov sme použili viacero voľne dostupných technológií a~programovacích jazykov, ktoré spolu vytvárajú celok. 
+\section*{Príprava dát}
 
 Tento projekt sa zameriava na situáciu v~Českej republike (dotazy~A,~B) a~na situáciu v~Éurópskej únii (dotaz C) od vypuknutia pandémie. Keďže sa jedná o~stále aktuálne téma, existuje k~nemu pomerne veľké množstvo dát. Podarilo sa nám získať dátové sady, ktoré sú dostačujúce pre zodpovedanie všetkých troch dotazov. Jedná~sa~o:
 
@@ -67,5 +69,12 @@ Samotná relačná databáza obsahuje dokopy 6 tabuliek - 3 hlavné tabuľky pre
 \caption{Schéma relačnej databázy}
 \end{center}
 \end{figure}
+
+\section*{Dotazy}
+Dotazy sú v~projekte realizované pomocou mysql konektoru navrhnutého v~skriptovacom jazyku Python. Tento konektor je implementovaný v~súbore \textt{query.py} a~využíva princípy objektovo orientovaného návrhu z~dôvôdu zvýšenej prehľadnosti a~zjednodušenie znovupoužiteľnosti. Takto navrhnutý objekt je následne využívaný na pozadí grafického rozhrania pre získavanie dát z~relačnej databázy.
+
+Hlavný objekt obaluje inicializáciu spojenia s~relačnou databázou. Jednotlivé SQL doazy sú realizované formou metód tohto objektu, ktorých vstupy sú parametrami SQL dotazov a~výstupmi je hodnota alebo pole hodnôť na ktoré sa dotazujeme.
+
+\section*{Grafické rozhranie}
 
 \end{document}
