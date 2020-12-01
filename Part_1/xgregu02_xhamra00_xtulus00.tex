@@ -66,5 +66,8 @@ Dátová sada dostupná z webovej lokality ECDC je natívne uložená vo formát
 
 % popis NoSQL databázy
 \section*{Zvolený spôsob uloženia surových dát}
-Pre uloženie surových dát sme zvolili NoSQL databázu MongoDB, pretože má flexibilné schéma dokumentov a využíva štruktúru podobnú formátu JSON, ktorý sa dobre spracováva vo vysokoúrovňových jazykoch.
+Pre uloženie surových dát sme zvolili NoSQL databázu MongoDB, pretože má flexibilné schéma dokumentov a využíva štruktúru podobnú formátu JSON, ktorý sa dobre spracováva vo vysokoúrovňových jazykoch. Využitie formátu JSON bude teda na mieste, pretože väčšina dát, ktoré se zabostarali, je v tomto formáte už získavaná a zvyšné budú bez komplikácií konvertované.
+
+\hfill \break
+Databáza bude tvorená tromi kolekciami, každá z nich bude určená pre dátovú sadu jedného z dotazov (dáta popísané v časti dotaz A, B, C) a bude obsahovať všetky dáta získané z hore uvedených zdrojov. Dáta z kolekcií budú následne filtrované a agregované pre získanie potrebných údajov z databázy.
 \end{document}
