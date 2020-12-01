@@ -305,7 +305,6 @@ def HandleQuery():
             start_date = datetime.date(int(start_date[0:4]), int(start_date[5:7]), int(start_date[8:10]))
             end_date = date_to.get()
             end_date = datetime.date(int(end_date[0:4]), int(end_date[5:7]), int(end_date[8:10]))
-            print(end_date)
             delta = datetime.timedelta(days=1)
 
             while start_date <= end_date:
@@ -315,7 +314,7 @@ def HandleQuery():
             
             # table.append(db.get_data_per_day_groupby_region(date_i))
 
-            query_window.show_country_graph(table)
+            query_window.show_country_graph(table, date_from.get())
 
         # choice by region - show by districts
         else:
@@ -324,6 +323,7 @@ def HandleQuery():
                 
                 region = region_listbox.get(index)
 
+                table = db.get_data_per_day_groupby_district_in_region(table, region)
                 query_window.show_region_graph(region, date_from.get(), date_to.get())
     
         

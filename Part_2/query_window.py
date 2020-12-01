@@ -71,7 +71,7 @@ def show_region_graph(region, date_from, date_to):
 
     # query_window.mainloop()
 
-def show_country_graph(table):
+def show_country_graph(table, date_from):
     a_min = 0    # the minimial value of the paramater a
     a_max = len(table)   # the maximal value of the paramater a
     a_init = len(table)-10   # the value of the parameter a to be used initially, when the graph is created
@@ -86,19 +86,20 @@ def show_country_graph(table):
     max_y = max(values)
     max_x = len(x)
 
-    fig = plt.figure(figsize=(16,9))
+    fig = plt.figure(figsize=(12,7))
 
     # # first we create the general layount of the figure
     # # with two axes objects: one for the plot of the function
     # # and the other for the slider
-    y_ax = plt.axes([0.1, 0.2, 0.8, 0.65])
-    slider_ax = plt.axes([0.1, 0.05, 0.8, 0.05])
-
+    y_ax = plt.axes([0.1, 0.3, 0.8, 0.55])
+    slider_ax = plt.axes([0.1, 0.02, 0.8, 0.05])
+    slider_ax.set_xticks([0,1,2,3])
 
     # # in plot_ax we plot the function with the initial value of the parameter a
     plt.axes(y_ax) # select sin_ax
-    plt.title('haha now you\'re blind')
+    plt.title('Česká republika od '+ date_from)
     plt.bar(x,y)
+    plt.tick_params(rotation=60)
     plt.xlim(0, max_x)
     plt.ylim(0, max_y)
 
@@ -115,8 +116,9 @@ def show_country_graph(table):
     # # be assigned the value of the slider.
     def update(a):
         plt.cla()
-        plt.axes(y_ax) # select sin_ax
-        plt.title('haha now you\'re blind')
+        plt.axes(y_ax)
+        plt.title('Česká republika od '+ date_from)
+        plt.tick_params(rotation=60)
         plt.xlim(0, max_x)
         plt.ylim(0, max_y)
         y = [int(y[1]) for y in table[int(a)]]
