@@ -296,16 +296,16 @@ def HandleQuery():
 
     # QUERY B
     elif choosen_query == 1:
-        
+        start_date = date_from.get()
+        start_date = datetime.date(int(start_date[0:4]), int(start_date[5:7]), int(start_date[8:10]))
+        end_date = date_to.get()
+        end_date = datetime.date(int(end_date[0:4]), int(end_date[5:7]), int(end_date[8:10]))
+        delta = datetime.timedelta(days=1)
+
+
         # whole country - show by regions
         if queryB_choice.get() == 0:
             table = []
-            
-            start_date = date_from.get()
-            start_date = datetime.date(int(start_date[0:4]), int(start_date[5:7]), int(start_date[8:10]))
-            end_date = date_to.get()
-            end_date = datetime.date(int(end_date[0:4]), int(end_date[5:7]), int(end_date[8:10]))
-            delta = datetime.timedelta(days=1)
 
             while start_date <= end_date:
                 table.append(db.get_data_per_day_groupby_region(start_date))
@@ -314,7 +314,7 @@ def HandleQuery():
             
             # table.append(db.get_data_per_day_groupby_region(date_i))
 
-            query_window.show_country_graph(table, date_from.get())
+            query_window.moving_graph(table, date_from.get(), "Česká republika")
 
         # choice by region - show by districts
         else:
@@ -323,8 +323,13 @@ def HandleQuery():
                 
                 region = region_listbox.get(index)
 
-                table = db.get_data_per_day_groupby_district_in_region(table, region)
-                query_window.show_region_graph(region, date_from.get(), date_to.get())
+                table = []  
+                
+                while start_date <= end_date:
+                    table.append(db.get_data_per_day_groupby_district_in_region(start_date, region))
+                    start_date += delta
+
+                query_window.moving_graph(table, date_from.get(), region)
     
         
             
