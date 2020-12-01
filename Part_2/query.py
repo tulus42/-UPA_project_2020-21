@@ -138,6 +138,14 @@ class MySQLDb:
         #return [x[1] for x in data]
         return data
 
+    def get_viable_eu_countries(self):
+        self.cursor.execute("SELECT DISTINCT country_name FROM country_rates LEFT JOIN country_codes USING(country_code);")
+
+        data = self.cursor.fetchall()
+
+        #return [x[1] for x in data]
+        return data
+
 """
     def get_cases_country_from_to(self, start_date, end_date, country):
         self.cursor.execute("SELECT country_code FROM country_codes WHERE country_name = %s", (country,))
@@ -167,8 +175,11 @@ class MySQLDb:
 ##################
 # testing section
 
-#db = MySQLDb()
+db = MySQLDb()
 #table = db.get_data_per_day_groupby_district_in_region("2020-11-04", "Zlínský kraj")
 #table = db.get_data_per_day_groupby_region("2020-11-04")
 #table = db.get_rates_cases_tests_from_to_country("2020-10-12", "2020-12-12", "Německo")
-#print(table)
+table = db.get_viable_eu_countries()
+print(table)
+
+
