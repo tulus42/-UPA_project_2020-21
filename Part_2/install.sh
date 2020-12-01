@@ -25,6 +25,7 @@ if [ ! -f /usr/bin/mysql ]
 		sudo service mysql start
 	else
 		echo "MySQL already installed."
+		echo "Grant permissions to root@localhost with mysql_native_password set to 'ahojahojahoj' for this implementation to work."
 fi
 
 if [ ! -f /usr/bin/pip3 ]
