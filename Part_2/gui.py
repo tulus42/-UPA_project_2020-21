@@ -123,7 +123,7 @@ country_scrollbar.grid(row=6, rowspan=3, column=3, sticky="wns")
 country_listbox.config(yscrollcommand = country_scrollbar.set)
 country_scrollbar.config(command = country_listbox.yview)
 
-countries = db.get_countries()
+countries = db.get_viable_eu_countries()
 
 for country in countries:
     country_listbox.insert(tk.END, country)
@@ -238,7 +238,7 @@ for val, text in enumerate(["Všetky kraje", "Výber krajov"]):
 
 # queryC option radiobutton
 
-for val, text in enumerate(["01", "02"]):
+for val, text in enumerate(["Vzťah nových prípadov a testovaní", "Percentuálne vyjadrenie nových prípadov"]):
     tmp = tk.Radiobutton(window, 
         text= text,
         width = 18,
@@ -327,10 +327,18 @@ def HandleQuery():
 
                 query_window.moving_graph(table, date_from.get(), region)
     
-        
-            
     elif choosen_query == 2:
-        print("ahoj dotaz C")
+        index = country_listbox.curselection()
+        if index != ():
+            country = country_listbox.get(index)
+
+            if queryC_choice.get() == 0:
+                table = db.get_rates_cases_tests_from_to_country(date_from.get(), date_to.get(), country)
+                query_window.show_country_graph(table, country)
+            else:
+                table = db.get_percenage_per_country_from_to(date_from.get(), date_to.get(), country)
+                query_window.show_country_perc_graph(table, country)
+            
 
 
     
