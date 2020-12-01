@@ -143,7 +143,7 @@ class MySQLDb:
 
         data = self.cursor.fetchall()
 
-        return [x[1] for x in data]
+        return [x[0] for x in data]
         # return data
 
 """
