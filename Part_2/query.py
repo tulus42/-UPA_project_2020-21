@@ -71,9 +71,9 @@ class MySQLDb:
     def get_countries(self):
         self.cursor.execute("SELECT DISTINCT country_name FROM country_codes")
 
-        regions = self.cursor.fetchall()
+        countries = self.cursor.fetchall()
 
-        return [x[0] for x in regions]
+        return [x[0] for x in countries]
 
     def get_districts_in_region(self, region):
         self.cursor.execute("SELECT region_code FROM region_codes WHERE region_name = %s", (region,))
@@ -143,8 +143,8 @@ class MySQLDb:
 
         data = self.cursor.fetchall()
 
-        #return [x[1] for x in data]
-        return data
+        return [x[1] for x in data]
+        # return data
 
 """
     def get_cases_country_from_to(self, start_date, end_date, country):
@@ -175,11 +175,10 @@ class MySQLDb:
 ##################
 # testing section
 
-db = MySQLDb()
-#table = db.get_data_per_day_groupby_district_in_region("2020-11-04", "Zlínský kraj")
-#table = db.get_data_per_day_groupby_region("2020-11-04")
-#table = db.get_rates_cases_tests_from_to_country("2020-10-12", "2020-12-12", "Německo")
-table = db.get_viable_eu_countries()
-print(table)
+# db = MySQLDb()
+# #table = db.get_data_per_day_groupby_district_in_region("2020-11-04", "Zlínský kraj")
+# #table = db.get_data_per_day_groupby_region("2020-11-04")
+# table = db.get_rates_cases_tests_from_to_country("2020-10-12", "2020-12-12", "Německo")
+# print(table)
 
 
