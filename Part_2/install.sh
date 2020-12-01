@@ -23,20 +23,23 @@ if [ ! -f /usr/bin/mysql ]
 		echo "MySQL already installed."
 fi
 
-if [! -f /usr/bin/pip* ]
+if [ ! -f /usr/bin/pip3 ]
 	then
 		sudo apt-get update -y
 		sudo apt-get install -y python3-pip
 		sudo apt-get install -y build-essential libssl-dev libffi-dev python3-dev
-		sudo apt-get install -y python3-venv
-
-		python3 -m venv env
-		source env/bin/activate
-
-		pip3 install -r requirements.txt
 	else
-		python3 -m venv env
-		source env/bin/activate
-
-		pip3 install -r requirements.txt
+		echo "pip3 already installed."
 fi
+
+if [ ! -f /usr/bin/virtualenv ]
+	then
+		sudo apt-get update -y
+		sudo apt-get install -y python3-venv
+	else
+		echo "venv already installed."
+fi
+
+python3 -m venv env
+source env/bin/activate
+pip3 install -r requirements.txt
