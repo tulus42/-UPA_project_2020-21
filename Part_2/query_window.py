@@ -49,8 +49,12 @@ def show_moving_average(table):
 
 def moving_graph(table, date_from, region):
     a_min = 0    # the minimial value of the paramater a
-    a_max = len(table)   # the maximal value of the paramater a
+    a_max = len(table)-10   # the maximal value of the paramater a
     a_init = len(table)-10   # the value of the parameter a to be used initially, when the graph is created
+
+    actual_date = datetime.date(int(date_from[0:4]), int(date_from[5:7]), int(date_from[8:10]))
+    delta = datetime.timedelta(days=a_max)
+    actual_date += delta
 
     x = [x[0] for x in table[0]]
     y = [int(y[1]) for y in table[-10]]
@@ -73,7 +77,7 @@ def moving_graph(table, date_from, region):
 
     # # in plot_ax we plot the function with the initial value of the parameter a
     plt.axes(y_ax) # select sin_ax
-    plt.title(region + ' od ' + date_from)
+    plt.title(region + ' - ' + str(actual_date))
     plt.bar(x,y)
     plt.tick_params(rotation=60)
     plt.xlim(0, max_x)
@@ -91,14 +95,22 @@ def moving_graph(table, date_from, region):
     # # indicated by the slider changes. The variable of this function will
     # # be assigned the value of the slider.
     def update(a):
+        actual_date = datetime.date(int(date_from[0:4]), int(date_from[5:7]), int(date_from[8:10]))
+        delta = datetime.timedelta(days=a)
+        actual_date += delta
+
         plt.cla()
         plt.axes(y_ax)
-        plt.title(region + ' od ' + date_from)
+        plt.title(region + ' - ' + str(actual_date))
         plt.tick_params(rotation=60)
         plt.xlim(0, max_x)
         plt.ylim(0, max_y)
         y = [int(y[1]) for y in table[int(a)]]
-        plt.bar(x,y)
+        try:
+            plt.bar(x,y)
+        except Exception:
+            pass
+            
 
 
     a_slider.on_changed(update)
