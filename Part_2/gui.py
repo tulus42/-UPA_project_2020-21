@@ -268,7 +268,7 @@ prepare_query()
 
 
 # constructor for radiobutton for Queries
-query_text = ["Dotaz A", "Dotaz B", "Dotaz C"]
+query_text = ["Dotaz A - prehľad v ČR podľa parametrov", "Dotaz B - vývoj v krajoch a okresoch ČR", "Dotaz C - vzťah nových prípadov a počtu testovaní v EÚ"]
 
 for val, text in enumerate(query_text):
     rButton = tk.Radiobutton(window, 

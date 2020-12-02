@@ -5,6 +5,7 @@ from tkinter import messagebox
 from matplotlib.widgets import Slider  # import the Slider widget
 import numpy as np
 from math import sqrt
+from matplotlib.ticker import ScalarFormatter
 
 def show_grapfh_abs_illness(table):
     
@@ -24,16 +25,16 @@ def show_grapfh_abs_illness(table):
 def show_grapfh_perc_illness(table, pop):
     
     dates = [x[0] for x in table]
-    values = [x[1]*100/pop for x in table]
-    perc_values = [values[i+1]/values[i] for i in range(len(values)-1)]
+    values = [x[1] for x in table]
+    perc_values = [values[i+1]*100/values[i] for i in range(len(values)-1)]
 
     fig, ax = plt.subplots()
     ax.plot_date(dates[1:], perc_values, marker='', linestyle='solid')
     fig.autofmt_xdate()
     ax.set_xlim([dates[0], dates[-1]])
-    plt.ylabel("Percentuálny nárast")
+    plt.ylabel("Percentuálny nárast [ % ]")
     plt.xlabel("Dátum")
-    plt.title("Percetuálny prírastok v nasledujúci deň")
+    plt.title("Percetuálny prírastok vzhľadom na predchádzajúci deň")
     plt.show()
 
 
@@ -135,14 +136,19 @@ def show_country_graph(table, country):
     new_cases = [x[1] for x in lines]
     tests_done = [x[2] for x in lines]
 
-    plt.axes([0.1, 0.2, 0.8, 0.7])
+    y_ax = plt.axes([0.1, 0.2, 0.8, 0.7])
+    
+
+    plt.axes(y_ax)
     plt.plot( dates, new_cases, marker='', markerfacecolor='blue', markersize=12, color='skyblue', linewidth=4, label="Nové prípady")
     plt.plot( dates, tests_done, marker='', color='olive', linewidth=2, label="Vykonané testy")
     plt.legend()
     plt.yscale(value="log")
+    
     plt.title(country)
-    plt.tick_params(rotation=60)
-
+    plt.tick_params(axis='x', rotation=60)
+    y_ax.yaxis.set_major_formatter(ScalarFormatter())
+ 
     plt.show()  
 
 def show_country_perc_graph(table, country):
