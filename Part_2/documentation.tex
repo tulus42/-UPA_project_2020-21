@@ -38,7 +38,7 @@ Cieľom tohto projektu bolo zoznámenie sa so spracovaním neštruktúrovaných 
 Témy tohto projektu boli vopred zadané a~pre riešenie nášho projektu sme si vybrali tému COVID-19. Dáta využité na zodpovedanie dotazov pochádzajú z~verejne dostupných zdrojov. Na návrh systémov sme použili viacero voľne dostupných technológií a~programovacích jazykov, ktoré spolu vytvárajú celok. 
 \section*{Príprava dát}
 
-Tento projekt sa zameriava na situáciu v~Českej republike (dotazy~A,~B) a~na situáciu v~Éurópskej únii (dotaz C) od vypuknutia pandémie. Keďže sa jedná o~stále aktuálne téma, existuje k~nemu pomerne veľké množstvo dát. Podarilo sa nám získať dátové sady, ktoré sú dostačujúce pre zodpovedanie všetkých troch dotazov. Jedná~sa~o:
+Tento projekt sa zameriava na situáciu v~Českej republike (dotazy~A,~B) a~na situáciu v~Éurópskej únii (dotaz C) od vypuknutia pandémie COVID-19. Keďže sa jedná o~stále aktuálne téma, existuje k~nemu pomerne veľké množstvo dát. Podarilo sa nám získať dátové sady, ktoré sú dostačujúce pre zodpovedanie všetkých troch dotazov. Jedná~sa~o:
 
 \begin{itemize}
 \item pre A: \href{https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/osoby.min.json }{COVID-19: Přehled osob s~prokázanou nákazou dle hlášení krajských hygienických stanic~(v2)}
@@ -46,10 +46,10 @@ Tento projekt sa zameriava na situáciu v~Českej republike (dotazy~A,~B) a~na s
 \item pre C: \href{https://www.ecdc.europa.eu/en/publications-data/covid-19-testing}{Testing for COVID-19 by week and country}
 \end{itemize}
 
-Tieto dátové sady obsahujú najpodstatnejšie informácie a~pre ich lepšiu prezentáciu boli vytvorené a~pridané 2 dátové sady. Dotazy by bolo možné zodpovedať aj bez nich avšak, v~tomto prípade ide o~zlepšenie čitatelnosti výsledku. Jedná~sa~o:
+Tieto dátové sady obsahujú najpodstatnejšie informácie a~pre ich lepšiu prezentáciu boli vytvorené a~pridané 2 dátové sady. Dotazy by bolo možné zodpovedať aj bez nich, avšak v~tomto prípade ide o~zlepšenie čitatelnosti výsledku. Jedná~sa~o:
 \begin{itemize}
-\item \texttt{countries.json} obsahuje unikátne skratky krajín a~ich český ekvivalent
-\item \texttt{nuts\_lau.json} obsahuje kódy NUTS (kraj) a~LAU (okres) a~ich český ekvivalent
+\item \texttt{countries.json:} obsahuje unikátne skratky krajín a~ich český ekvivalent
+\item \texttt{nuts\_lau.json:} obsahuje kódy NUTS (kraj) a~LAU (okres) a~ich český ekvivalent
 \end{itemize} 
 
 Dátové sady sú importované pomocou príkazu \texttt{mongoimport}. Dátové sady A~a~B~vyžadujú dodatočné formátovanie pre prácu s podstatnými dátami. Tento proces je automatizovaný pomocou skriptu \texttt{prepData.sh}, ktorý:
@@ -59,7 +59,7 @@ Dátové sady sú importované pomocou príkazu \texttt{mongoimport}. Dátové s
 \item Naimportuje každú dátovú sadu ako kolekciu; kolekcie sú pomenované podľa hlavnej dátovej sady (A,~B,~C) a~novo pridané dátové sady sú pomenované ako countries a~nuts\_lau
 \end{itemize}
 
-Samotnú úpravu, prípravu a~konverziu dát vykonáva skript \texttt{convertData.py}, ktorý sa spúšťa s~Python verziou~3. Tento skript bol navrhnutý tak, aby bol ľahko modifikovateľný a~rozšíriteľný, preto využíva princípy objektovo orientovaného návrhu. Na začiatku sa pripojí ku~NoSQL a MySQL databázi. Vytvorí relačnú databázu v~jazyku SQL - kód vytvorenia relačnej databáze sa nachádza v~samostatnom súbore s~názvom \texttt{Corona.sql}, ktorý je preparsovaný a~vykonajú sa jednotlivé príkazy vrámci skriptu \texttt{convertData.py}. Toto riešenie zaisťuje, že samotný skript obsahuje minimum \uv{natvrdo} napísaných príkazov pre vytvorenie relačnej databáze.
+Samotnú úpravu, prípravu a~konverziu dát vykonáva skript \texttt{convertData.py}, ktorý sa spúšťa s~Python verziou~3. Tento skript bol navrhnutý tak, aby bol ľahko modifikovateľný a~rozšíriteľný, preto využíva princípy objektovo orientovaného návrhu. Na začiatku sa pripojí ku~NoSQL a MySQL databázi. Vytvorí relačnú databázu v~jazyku SQL - kód vytvorenia relačnej databáze sa nachádza v~samostatnom súbore s~názvom \texttt{Corona.sql}, ktorý je preparsovaný a~jednotlivé príkazy sú vykonané vrámci vrámci skriptu \texttt{convertData.py}. Toto riešenie zaisťuje, že samotný skript obsahuje minimum \uv{natvrdo} napísaných príkazov pre vytvorenie relačnej databáze.
 
 Samotná relačná databáza obsahuje dokopy 6 tabuliek - 3 hlavné tabuľky pre zodpovedanie dotazov a~3~pomocné. Teoreticky by bolo možné použiť iba~3~hlavné tabuľky, ale mnohé dáta by boli redundantné a~neviedlo by to k~vhodnému návrhu. Slová ako \texttt{district} a~\texttt{region} sú často zameniteľné, no v~celom tomto projekte je slovo \texttt{district} považované za okres a~\texttt{region} za kraj.
 
@@ -70,8 +70,13 @@ Samotná relačná databáza obsahuje dokopy 6 tabuliek - 3 hlavné tabuľky pre
 \end{center}
 \end{figure}
 
+V skripte \texttt{convertData.py} sme navrhli všeobecnú funkciu \texttt{obtainImportantData}, ktorá chystá a upravuje všetky dáta. Táto funkcia dostane na vstupe dáta z MongoDB, zoznam záhlaví, ktoré chceme extrahovať a zoznam obmedzení pre jednotlivé záhlavia.\\
+
+Demonštrácia použitia:\\
+\texttt{self.obtainImportantData(C, ['population', 'country\_code'], ['', 'UPPER\_C'])}, \\kde C je kolekcia všetkých dát pre dotaz C z mongoDB, druhý parameter obsahuje zoznam záhlaví (dát), ktoré chceme v tomto prípade extrahovať (populácia a kód krajiny), a na záver je zoznam obmedzení rovnakej dĺžky ako bol zoznam záhlaví. Prázdna položka v zozname obmedzení značí "žiadne obmedzenie" a obmedzenie "UPPER\_C" prekonvertuje všetky kódy krajín do veľkých písmen. Vďaka tomuto návrhu spracovania dát je veľmi jednoduché modifikovať a rozširovať relačnúú databázu a samotnú úpravu dát.
+
 \section*{Dotazy}
-Dotazy sú v~projekte realizované pomocou mysql konektoru navrhnutého v~skriptovacom jazyku Python. Tento konektor je implementovaný v~súbore \textt{query.py} a~využíva princípy objektovo orientovaného návrhu z~dôvôdu zvýšenej prehľadnosti a~zjednodušenie znovupoužiteľnosti. Takto navrhnutý objekt je následne využívaný na pozadí grafického rozhrania pre získavanie dát z~relačnej databázy.
+Dotazy sú v~projekte realizované pomocou mysql konektoru navrhnutého v~skriptovacom jazyku Python. Tento konektor je implementovaný v~súbore \texttt{query.py} a~využíva princípy objektovo orientovaného návrhu z~dôvôdu zvýšenej prehľadnosti a~zjednodušenie znovupoužiteľnosti. Takto navrhnutý objekt je následne využívaný na pozadí grafického rozhrania pre získavanie dát z~relačnej databázy.
 
 Hlavný objekt obaluje inicializáciu spojenia s~relačnou databázou. Jednotlivé SQL doazy sú realizované formou metód tohto objektu, ktorých vstupy sú parametrami SQL dotazov a~výstupmi je hodnota alebo pole hodnôť na ktoré sa dotazujeme.
 
