@@ -93,7 +93,7 @@ def moving_graph(table, date_from, region):
     plt.title(region + ' - ' + str(actual_date))
     plt.bar(x,y)
     plt.tick_params(rotation=60)
-    plt.xlim(0, max_x)
+    plt.xlim(-0.5, max_x-0.5)
     plt.ylim(0, max_y)
 
     # # here we create the slider
@@ -116,7 +116,7 @@ def moving_graph(table, date_from, region):
         plt.axes(y_ax)
         plt.title(region + ' - ' + str(actual_date))
         plt.tick_params(rotation=60)
-        plt.xlim(0, max_x)
+        plt.xlim(-0.5, max_x-0.5)
         plt.ylim(0, max_y)
         y = [int(y[1]) for y in table[int(a)]]
         try:
