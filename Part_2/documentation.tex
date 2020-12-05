@@ -81,5 +81,34 @@ Dotazy sú v~projekte realizované pomocou mysql konektoru navrhnutého v~skript
 Hlavný objekt obaluje inicializáciu spojenia s~relačnou databázou. Jednotlivé SQL doazy sú realizované formou metód tohto objektu, ktorých vstupy sú parametrami SQL dotazov a~výstupmi je hodnota alebo pole hodnôť na ktoré sa dotazujeme.
 
 \section*{Grafické rozhranie}
+Grafické rozhranie je implementované pomocou knižnice TKinter. Hlavné okno je tvorené 3 hlavnými tlačidlami: tlačidlom pre \textit{dotaz A}, pre \textit{dotaz B} a pre \textit{dotaz C}. Po zvolení jedného z dotazov sa hlavné okno prispôsobí zvolenej možnosti a zobrazí možnosti súvisiace so zvoleným dotazom. Po spracovaní možností daného dotazu stačí kliknúť na tlačidlo \textit{Spracuj dotaz} v spodnej časti okna a aplikácia vyhodnotí dotaz so zvolenými charakteristikami.
+
+\subsection*{Dotaz A -- prehľad v ČR podľa parametrov}
+Dotaz A je zameraný na zobrazovanie všeobecných štatistík o nových prípadoch pribúdajúcich v ČR.
+Po zvolení dotazu A sa zobrazia možnosti pre upresnenie parametrov pre vytvorenie štatistík. 
+Okno dotazu A umožňuje zvoliť časový interval, pre ktorý sa majú spracovať štatistiky, pohlavie, vekový interval a možnosť zobraziť len prípady, ktoré boli do krajiny importované zo zahraničia -- bez zvolenia sa zobrazujú všetky prípady vrátane importovaných.
+
+Hlavné voľby umožňujú výber medzi zobrazením 3 grafov:
+\begin{itemize}
+    \item Graf absolútneho prírastku -- zobrazuje prírastok nových pozitívnych prípadov v čase.
+    \item Graf percentuálneho prírastku -- zobrazuje percentuálny prírastok vzhľadom na predchádzajúci deň. V zvolenom časovom intervale teda zobrazuje, ako prudko sa prírastok zvyšoval resp. znižoval.
+    \item Kĺzavý priemer -- zobrazuje graf vývoja kĺzavého priemeru nových pozitívnych prípadov v zvolenom časovom intervale.
+\end{itemize}
+
+\subsection*{Dotaz B -- vývoj v krajoch a okresoch ČR}
+Cieľom dotazu B je zobraziť priebeh vývoja pribúdania nových prípadov v Českej republike.
+Sekcia dotazu B umožňuje podobne ako pri dotaze A voľbu časového intervalu. Okrem toho je možné zvoliť medzi možnosťami \textit{Všetky kraje}, čo zobrazí vyhodnotenie v rámci celej ČR a jej krajov, a možnosť \textit{Výber krajov}, čo užívateľovi umožní vybrať jeden z krajov a následne vyhodnocovať okresy vo vybranom kraji.
+
+Po kliknutí na tlačidlo \textit{Spracuj dotaz} sa zobrazí histogram znázorňujúci počet nakazených v krajoch (resp. okresoch) v konkrétny deň. Pod grafom je slider, ktorý umožňuje prechádzať tieto dáta v rozmedzí dátumov zvolenom v okne dotazu B. Je tak možné sledovať naraz vývoj v krajoch (resp. okresoch) a zhodnotiť možný vplyv na susedné kraje (resp. okresy).
+
+\subsection*{Dotaz C -- vzťah nových prípadov a portu testovaní v EÚ}
+V tejto časti sa už nejedná len o Českú republiku, ale o štáty Európskej Únie. Cieľom tohoto dotazu je vyjadriť vzťah medzi novými pozitívnymi prípadmi a vykonanými testami v krajinách EÚ. 
+Okno dotazu C umožňuje rovnako ako predchádzajúce výber časového intervalu. Je možné vybrať medzi jednou z variánt:
+\begin{itemize}
+    \item Vzťah nových prípadov a testovaní -- umožňuje zobraziť v jednom grafe krivku popisujúcu počet vykonaných testov a krivku popisujúcu počet nových pozitívnych prípadov v zvolenom časovom intervale. Tento graf má logaritmickú os x, čo zabezpečuje lepšiu viditeľnosť vzťahu medzi týmito dvomi hodnotami.
+    \item Percentuálne vyjadrenie nových prípadov -- zobrazuje percentuálne vyjadrenie nových pozitívnych prípadov vzhľadom na počet vykonaných testov. Tento graf veľmi výrazne ukazuje vývoj šírenia nákazy, nakoľko popisuje koľko percent z testovaných bolo v skutočnosti pozitívnych.
+\end{itemize}
+
+Pre obe možnosti je potrebné zvoliť krajinu zo zoznamu, pre ktorú sa budú údaje vyhodnocovať. Okrem týchto dvoch grafov je možné si pre krajiny v zozname nechať vypočítať korelačný koeficient pre číselné vyjadrenie korelácie medzi počtom vykonaných testov a počtom nových prípadov v danej krajine v zvolenom časovom intervale.
 
 \end{document}
