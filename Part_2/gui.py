@@ -4,6 +4,7 @@ import tkinter as tk
 import query
 import query_window
 import datetime
+import re
 
 
 
@@ -131,12 +132,18 @@ for country in countries:
 
 
 def corelation():
+    start_date = date_from.get()
+    end_date = date_to.get()
+
+    if re.sub(r'(\d{4}-\d{2}-\d{2})', "", start_date) != "" or re.sub(r'(\d{4}-\d{2}-\d{2})', "", end_date):
+        return
+
     index = country_listbox.curselection()
     if index != ():
         country = country_listbox.get(index)
 
-        table = db.get_rates_cases_tests_from_to_country(date_from.get(), date_to.get(), country)
-        query_window.evaluate_corelation(date_from.get(), date_to.get(), country, table)
+        table = db.get_rates_cases_tests_from_to_country(start_date, end_date, country)
+        query_window.evaluate_corelation(start_date, end_date, country, table)
     
     
 coutnry_button = tk.Button(window, text="Vypočítaj koeficient korelácie", command=corelation, padx=5)
@@ -286,14 +293,26 @@ for val, text in enumerate(query_text):
 
 def HandleQuery():
     choosen_query = query_choice.get()
+
+    start_date = date_from.get()
+    end_date = date_to.get()
+
+    if re.sub(r'(\d{4}-\d{2}-\d{2})', "", start_date) != "" or re.sub(r'(\d{4}-\d{2}-\d{2})', "", end_date):
+        return
     
     # QUERY A
     if choosen_query == 0:
+        start_age = age_from.get()
+        end_age = age_to.get()
+
+        if re.sub(r'(\d+)', "", start_age) != "" or re.sub(r'(\d+)', "", end_age) or start_age == "" or end_age == "":
+            return
+
         # get options for queryA
         choosen_option = queryA_option_choice.get()
         
         # get table with illness increase for all A options
-        table = db.get_ill_increase_in_time(date_from.get(), date_to.get(), age_from.get(), age_to.get(), queryA_param_gender.get(), queryA_param_imported.get())
+        table = db.get_ill_increase_in_time(start_date, end_date, start_age, end_age, queryA_param_gender.get(), queryA_param_imported.get())
 
         # show graph of absolute illness increase
         if choosen_option == 0:
@@ -309,9 +328,7 @@ def HandleQuery():
 
     # QUERY B
     elif choosen_query == 1:
-        start_date = date_from.get()
         start_date = datetime.date(int(start_date[0:4]), int(start_date[5:7]), int(start_date[8:10]))
-        end_date = date_to.get()
         end_date = datetime.date(int(end_date[0:4]), int(end_date[5:7]), int(end_date[8:10]))
         delta = datetime.timedelta(days=1)
 
@@ -327,7 +344,7 @@ def HandleQuery():
             
             # table.append(db.get_data_per_day_groupby_region(date_i))
 
-            query_window.moving_graph(table, date_from.get(), "Česká republika")
+            query_window.moving_graph(table, start_date, "Česká republika")
 
         # choice by region - show by districts
         else:
@@ -342,7 +359,7 @@ def HandleQuery():
                     table.append(db.get_data_per_day_groupby_district_in_region(start_date, region))
                     start_date += delta
 
-                query_window.moving_graph(table, date_from.get(), region)
+                query_window.moving_graph(table, start_date, region)
     
     elif choosen_query == 2:
         index = country_listbox.curselection()
@@ -350,10 +367,10 @@ def HandleQuery():
             country = country_listbox.get(index)
 
             if queryC_choice.get() == 0:
-                table = db.get_rates_cases_tests_from_to_country(date_from.get(), date_to.get(), country)
+                table = db.get_rates_cases_tests_from_to_country(start_date, end_date, country)
                 query_window.show_country_graph(table, country)
             else:
-                table = db.get_percenage_per_country_from_to(date_from.get(), date_to.get(), country)
+                table = db.get_percenage_per_country_from_to(start_date, end_date, country)
                 query_window.show_country_perc_graph(table, country)
             
 
