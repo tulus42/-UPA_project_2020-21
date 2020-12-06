@@ -298,6 +298,7 @@ def HandleQuery():
     end_date = date_to.get()
 
     if re.sub(r'(\d{4}-\d{2}-\d{2})', "", start_date) != "" or re.sub(r'(\d{4}-\d{2}-\d{2})', "", end_date):
+        tk.messagebox.showwarning("Nesprávny formát dátumu", "Zadajte dátum vo formáte:\nYYYY-MM-DD")
         return
     
     # QUERY A
@@ -306,6 +307,7 @@ def HandleQuery():
         end_age = age_to.get()
 
         if re.sub(r'(\d+)', "", start_age) != "" or re.sub(r'(\d+)', "", end_age) or start_age == "" or end_age == "":
+            tk.messagebox.showwarning("Nesprávne zadaný vek", "Zadajte vek ako celé číslo\nväčšie alebo rovné 0")
             return
 
         # get options for queryA
@@ -328,8 +330,10 @@ def HandleQuery():
 
     # QUERY B
     elif choosen_query == 1:
-        start_date = datetime.date(int(start_date[0:4]), int(start_date[5:7]), int(start_date[8:10]))
-        end_date = datetime.date(int(end_date[0:4]), int(end_date[5:7]), int(end_date[8:10]))
+
+
+        start_datetime = datetime.date(int(start_date[0:4]), int(start_date[5:7]), int(start_date[8:10]))
+        end_datetime = datetime.date(int(end_date[0:4]), int(end_date[5:7]), int(end_date[8:10]))
         delta = datetime.timedelta(days=1)
 
 
@@ -337,9 +341,9 @@ def HandleQuery():
         if queryB_choice.get() == 0:
             table = []
 
-            while start_date <= end_date:
-                table.append(db.get_data_per_day_groupby_region(start_date))
-                start_date += delta
+            while start_datetime <= end_datetime:
+                table.append(db.get_data_per_day_groupby_region(start_datetime))
+                start_datetime += delta
 
             
             # table.append(db.get_data_per_day_groupby_region(date_i))
@@ -355,9 +359,9 @@ def HandleQuery():
 
                 table = []  
                 
-                while start_date <= end_date:
-                    table.append(db.get_data_per_day_groupby_district_in_region(start_date, region))
-                    start_date += delta
+                while start_datetime <= end_datetime:
+                    table.append(db.get_data_per_day_groupby_district_in_region(start_datetime, region))
+                    start_datetime += delta
 
                 query_window.moving_graph(table, start_date, region)
     
