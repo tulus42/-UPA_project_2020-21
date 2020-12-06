@@ -48,3 +48,12 @@ fi
 python3 -m venv env
 source env/bin/activate
 pip3 install -r requirements.txt
+
+echo "Preparing data for MongoDB"
+bash prepData.sh
+
+echo "Preparing MySQL database and formatting and moving the data"
+python3 convertData.py
+
+echo "Running GUI"
+python3 gui.py
