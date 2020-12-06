@@ -140,6 +140,7 @@ def show_country_graph(table, country):
     
 
     plt.axes(y_ax)
+    plt.xlim(min(dates), max(dates))
     plt.plot( dates, new_cases, marker='', markerfacecolor='blue', markersize=12, color='skyblue', linewidth=4, label="Nové prípady")
     plt.plot( dates, tests_done, marker='', color='olive', linewidth=2, label="Vykonané testy")
     plt.legend()
