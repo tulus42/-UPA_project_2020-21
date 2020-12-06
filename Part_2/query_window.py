@@ -12,14 +12,19 @@ def show_grapfh_abs_illness(table):
     dates = [x[0] for x in table]
     values = [x[1] for x in table]
 
-    fig, ax = plt.subplots()
-    ax.plot_date(dates, values, marker='', linestyle='solid')
-    fig.autofmt_xdate()
-    ax.set_xlim([dates[0], dates[-1]])
-    plt.ylabel("Prírastok nakazených")
-    plt.xlabel("Dátum")
-    plt.title("Nové prípady")
-    plt.show()
+    try:
+        fig, ax = plt.subplots()
+        ax.plot_date(dates, values, marker='', linestyle='solid')
+        fig.autofmt_xdate()
+        ax.set_xlim([dates[0], dates[-1]])
+        plt.ylabel("Prírastok nakazených")
+        plt.xlabel("Dátum")
+        plt.title("Nové prípady")
+        plt.show()
+    except Exception:
+        plt.close('all')
+        tk.messagebox.showwarning("Nesprávne zadaný vek", "Zadajte väčší vekový rozsah.")
+        return
 
 
 def show_grapfh_perc_illness(table, pop):
@@ -28,14 +33,19 @@ def show_grapfh_perc_illness(table, pop):
     values = [x[1] for x in table]
     perc_values = [values[i+1]*100/values[i] for i in range(len(values)-1)]
 
-    fig, ax = plt.subplots()
-    ax.plot_date(dates[1:], perc_values, marker='', linestyle='solid')
-    fig.autofmt_xdate()
-    ax.set_xlim([dates[0], dates[-1]])
-    plt.ylabel("Percentuálny nárast [ % ]")
-    plt.xlabel("Dátum")
-    plt.title("Percetuálny prírastok vzhľadom na predchádzajúci deň")
-    plt.show()
+    try:
+        fig, ax = plt.subplots()
+        ax.plot_date(dates[1:], perc_values, marker='', linestyle='solid')
+        fig.autofmt_xdate()
+        ax.set_xlim([dates[0], dates[-1]])
+        plt.ylabel("Percentuálny nárast [ % ]")
+        plt.xlabel("Dátum")
+        plt.title("Percetuálny prírastok vzhľadom na predchádzajúci deň")
+        plt.show()
+    except Exception:
+        plt.close('all')
+        tk.messagebox.showwarning("Nesprávne zadaný vek", "Zadajte väčší vekový rozsah.")
+        return
 
 
 def show_moving_average(table):
@@ -47,16 +57,19 @@ def show_moving_average(table):
     week_sorted_values = [sorted(i) for i in week_values]
     week_median = [i[3] for i in week_sorted_values]
 
-    fig, ax = plt.subplots()
-    ax.plot_date(dates[6:], week_median, marker='', linestyle='solid')
-    fig.autofmt_xdate()
-    ax.set_xlim([dates[0], dates[-1]])
-    plt.title("Kĺzavý medián")
-    plt.ylabel("Medián nových prípadov")
-    plt.xlabel("Dátum")
-    plt.show()
-
-    plt.show()  
+    try:
+        fig, ax = plt.subplots()
+        ax.plot_date(dates[6:], week_median, marker='', linestyle='solid')
+        fig.autofmt_xdate()
+        ax.set_xlim([dates[0], dates[-1]])
+        plt.title("Kĺzavý medián")
+        plt.ylabel("Medián nových prípadov")
+        plt.xlabel("Dátum")
+        plt.show()
+    except Exception:
+        plt.close('all')
+        tk.messagebox.showwarning("Nesprávne zadaný vek", "Zadajte väčší vekový rozsah.")
+        return
 
 
 

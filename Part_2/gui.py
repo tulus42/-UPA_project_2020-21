@@ -300,14 +300,29 @@ def HandleQuery():
     if re.sub(r'(\d{4}-\d{2}-\d{2})', "", start_date) != "" or re.sub(r'(\d{4}-\d{2}-\d{2})', "", end_date):
         tk.messagebox.showwarning("Nesprávny formát dátumu", "Zadajte dátum vo formáte:\nYYYY-MM-DD")
         return
-    
+
+    if start_date > end_date:
+        tk.messagebox.showwarning("Nesprávne zadaný dátum", "Dátum \"Od\" musí byť menší ako dátum \"Do\".")
+        return
+
+    try:
+        datetime.date(int(start_date[0:4]), int(start_date[5:7]), int(start_date[8:10]))
+        datetime.date(int(end_date[0:4]), int(end_date[5:7]), int(end_date[8:10]))
+    except Exception:
+        tk.messagebox.showwarning("Nesprávne zadaný dátum", "Zadali ste neexistujúci dátum.")
+        return
+
     # QUERY A
     if choosen_query == 0:
         start_age = age_from.get()
         end_age = age_to.get()
 
         if re.sub(r'(\d+)', "", start_age) != "" or re.sub(r'(\d+)', "", end_age) or start_age == "" or end_age == "":
-            tk.messagebox.showwarning("Nesprávne zadaný vek", "Zadajte vek ako celé číslo\nväčšie alebo rovné 0")
+            tk.messagebox.showwarning("Nesprávne zadaný vek", "Zadajte vek ako celé číslo\nväčšie alebo rovné 0.")
+            return
+        
+        if int(start_age) > int(end_age):
+            tk.messagebox.showwarning("Nesprávne zadaný vek", "Vek \"Od\" musí byť menší ako vek \"Do\".")
             return
 
         # get options for queryA
@@ -316,6 +331,7 @@ def HandleQuery():
         # get table with illness increase for all A options
         table = db.get_ill_increase_in_time(start_date, end_date, start_age, end_age, queryA_param_gender.get(), queryA_param_imported.get())
 
+    
         # show graph of absolute illness increase
         if choosen_option == 0:
             query_window.show_grapfh_abs_illness(table)
@@ -327,7 +343,7 @@ def HandleQuery():
 
         elif choosen_option == 2:
             query_window.show_moving_average(table)
-
+    
     # QUERY B
     elif choosen_query == 1:
 
