@@ -48,8 +48,8 @@ Tento projekt sa zameriava na situáciu v~Českej republike (dotazy~A,~B) a~na s
 
 Tieto dátové sady obsahujú najpodstatnejšie informácie a~pre ich lepšiu prezentáciu boli vytvorené a~pridané 2 dátové sady. Dotazy by bolo možné zodpovedať aj bez nich, avšak v~tomto prípade ide o~zlepšenie čitatelnosti výsledku. Jedná~sa~o:
 \begin{itemize}
-\item \texttt{countries.json:} obsahuje unikátne skratky krajín a~ich český ekvivalent
-\item \texttt{nuts\_lau.json:} obsahuje kódy NUTS (kraj) a~LAU (okres) a~ich český ekvivalent
+\item \texttt{countries.json:} obsahuje unikátne skratky krajín a~ich český ekvivalent; tento dataset bol získavný zo stránky \href{https://stefangabos.github.io/world\_countries/}{https://stefangabos.github.io/world\_countries/}, avšak neobshuje úplne všetky údaje (napríklad pre Kosovo). Kvôli zachovaniu konzistencie relačnej databázy je užívateľ upozornený, že daný kód krajiny chýba v tomto súbore a je jednoduché ho ručne doplniť.
+\item \texttt{nuts\_lau.json:} obsahuje kódy NUTS (kraj) a~LAU (okres) a~ich český ekvivalent; tento dataset bol vytvorený ručne
 \end{itemize} 
 
 Dátové sady sú importované pomocou príkazu \texttt{mongoimport}. Dátové sady A~a~B~vyžadujú dodatočné formátovanie pre prácu s podstatnými dátami. Tento proces je automatizovaný pomocou skriptu \texttt{prepData.sh}, ktorý:
@@ -73,7 +73,7 @@ Samotná relačná databáza obsahuje dokopy 6 tabuliek - 3 hlavné tabuľky pre
 V skripte \texttt{convertData.py} sme navrhli všeobecnú funkciu \texttt{obtainImportantData}, ktorá chystá a upravuje všetky dáta. Táto funkcia dostane na vstupe dáta z MongoDB, zoznam záhlaví, ktoré chceme extrahovať a zoznam obmedzení pre jednotlivé záhlavia.\\
 
 Demonštrácia použitia:\\
-\texttt{self.obtainImportantData(C, ['population', 'country\_code'], ['', 'UPPER\_C'])}, \\kde C je kolekcia všetkých dát pre dotaz C z mongoDB, druhý parameter obsahuje zoznam záhlaví (dát), ktoré chceme v tomto prípade extrahovať (populácia a kód krajiny), a na záver je zoznam obmedzení rovnakej dĺžky ako bol zoznam záhlaví. Prázdna položka v zozname obmedzení značí "žiadne obmedzenie" a obmedzenie "UPPER\_C" prekonvertuje všetky kódy krajín do veľkých písmen. Vďaka tomuto návrhu spracovania dát je veľmi jednoduché modifikovať a rozširovať relačnúú databázu a samotnú úpravu dát.
+\texttt{self.obtainImportantData(C, ['population', 'country\_code'], ['', 'UPPER\_C'])}, \\kde C je kolekcia všetkých dát pre dotaz C z mongoDB, druhý parameter obsahuje zoznam záhlaví (dát), ktoré chceme v tomto prípade extrahovať (populácia a kód krajiny), a na záver je zoznam obmedzení rovnakej dĺžky ako bol zoznam záhlaví. Prázdna položka v zozname obmedzení značí "žiadne obmedzenie" a obmedzenie "UPPER\_C" prekonvertuje všetky kódy krajín do veľkých písmen. Vďaka tomuto návrhu spracovania dát je veľmi jednoduché modifikovať a rozširovať relačnú databázu a samotnú úpravu dát.
 
 \section*{Dotazy}
 Dotazy sú v~projekte realizované pomocou mysql konektoru navrhnutého v~skriptovacom jazyku Python. Tento konektor je implementovaný v~súbore \texttt{query.py} a~využíva princípy objektovo orientovaného návrhu z~dôvôdu zvýšenej prehľadnosti a~zjednodušenie znovupoužiteľnosti. Takto navrhnutý objekt je následne využívaný na pozadí grafického rozhrania pre získavanie dát z~relačnej databázy.

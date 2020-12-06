@@ -5,11 +5,11 @@ Tento readme obsahuje popis odovzdaných súborov a ich využitia pre splnenie z
 ## Odovzdané súbory
 Súbory pozostávajú z niekoľkých skriptov napísaných v bash-i a Python-e. 
 
-Odovzdaný adresár obsahuje súbor *install.sh* ktorý je pripravený na čistú inštaláciu všetkých potrebných komponent pre operačný systém Ubuntu 20.04. Na ostatných Unixových systémoch alebo iných verziach Ubuntu nie je kompatibilita zaručená. Inštaláciu je možné začať spustením inštalačného skriptu *./install.sh*.
+Odovzdaný adresár obsahuje súbor *install.sh* ktorý je pripravený na čistú inštaláciu všetkých potrebných komponent pre operačný systém Ubuntu 20.04. Na ostatných Unixových systémoch alebo iných verziach Ubuntu nie je kompatibilita zaručená. Inštaláciu je možné začať spustením inštalačného skriptu *./install.sh*. Prvotná inštalácia nachystá obe databázy, stiahne a upraví dáta a spustí GUI. Ak nie je potrebné zaistiť splnenie požiadaviek, alebo je potrebné iba aktualizať dáta, je možné ručne spustiť tri skripty samostatne (popísané nižšie).
 
-Po úspešnej inštalácií je možné pokračovať spustením skriptu na prípravu a uloženie neštruktúrovaných dát do NoSQL databáze MongoDB. Túto akciu je možné spustiť pomocou súboru *prepData.sh*, ktorý automaticky sitahne a importuje všetko potrebné do NoSQL databáze. 
+Prípravu a uloženie neštruktúrovaných dát do NoSQL databáze MongoDB je možné spustiť pomocou súboru *prepData.sh*, ktorý automaticky stiahne a importuje všetko potrebné do NoSQL databáze. Pri aktiulizácií dát je nutné tento skript spustiť ako prvý.
 
-Po úspešnom importe dát je možné využiť skript *convertData.py* na úpravu a prenos dát z NoSQL do SQL databáze (obe tieto databázy boli inštalované pomocou *install.sh* skriptu, ak nie, je možné, že nebudú správne nastavené prístupové práva a heslá). Prípravu a prenos dát do SQL databáze je možné začať spustením skriptu *python3 convertData.py*.
+Po úspešnom importe dát je možné využiť skript *convertData.py* na úpravu a prenos dát z NoSQL do SQL databáze (obe tieto databázy boli inštalované pomocou *install.sh* skriptu, ak nie, je možné, že nebudú správne nastavené prístupové práva a heslá). Prípravu a prenos dát do SQL databáze je možné začať spustením skriptu *python3 convertData.py*. Pri aktualizáci dát je nutné tento skript spustiť ako druhý.
 
 Ďalej odovzdaný adresár obsahuje súbor requirements.txt pre prípadnú manuálnu inštaláciu. Tento súbor obsahuje potrebné python3 knižnice a ich verzie, ktoré sú potrebné pre spustenie nami odovzdaných python skriptov.
 
